@@ -85,7 +85,7 @@ export default function Footer() {
         <p>
           © {new Date().getFullYear()} {site.orgName} – {site.country}. All rights reserved.
         </p>
-        <Link to="/admin">Staff login</Link>
+        <Link to="/admin">Admin</Link>
       </div>
     </footer>
   )
