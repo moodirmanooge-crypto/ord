@@ -34,4 +34,4 @@ export function buildNav(menu = [], programs = []) {
       }
     })
     .filter((n) => n.to || n.children.length > 0)
-}s
+}
