@@ -1,0 +1,11 @@
+// Firebase Console → Storage → Rules (ku dar qaybta rda/)
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /rda/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.resource.size < 6 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

@@ -1,0 +1,24 @@
+// Ku dar (merge) qaybtan rules-kaaga hadda jira ee Firebase Console → Firestore → Rules.
+// FIIRO GAAR AH: login-ka waa custom (Rda-Admin collection), sidaas darteed rules-ku ma kala saari karaan
+// admin iyo booqde. Tani waa isla habka mashaariicdaada kale; si loo xoojiyo, u wareeji Firebase Auth.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Website-ka dadweynaha: akhriska furan
+    match /rda_settings/{id}  { allow read, write: if true; }
+    match /rda_hero/{id}      { allow read, write: if true; }
+    match /rda_programs/{id}  { allow read, write: if true; }
+    match /rda_regions/{id}   { allow read, write: if true; }
+    match /rda_team/{id}      { allow read, write: if true; }
+    match /rda_news/{id}      { allow read, write: if true; }
+    match /rda_gallery/{id}   { allow read, write: if true; }
+    match /rda_partners/{id}  { allow read, write: if true; }
+
+    // Foomka Contact: qofkasta wuu soo diri karaa; admin-ku akhrisaa/tirtiraa
+    match /rda_messages/{id}  { allow read, update, delete, create: if true; }
+
+    // Admin accounts (login-ka ayaa halkan ka akhriya)
+    match /Rda-Admin/{id}     { allow read, write: if true; }
+  }
+}
