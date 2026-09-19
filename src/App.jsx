@@ -4,6 +4,7 @@ import { SiteProvider } from './lib/data'
 import { Loading, ScrollManager } from './components/ui'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import Reveal from './components/Reveal'
 import Home from './pages/Home'
 import About from './pages/About'
 import Programs from './pages/Programs'
@@ -38,6 +39,7 @@ export default function App() {
   return (
     <SiteProvider>
       <ScrollManager />
+      <Reveal />
       <Routes>
         <Route
           path="/admin/*"

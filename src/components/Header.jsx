@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, Menu, Phone, Mail, X } from 'lucide-react'
 import { useSite, useContent } from '../lib/data'
@@ -13,7 +13,33 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
   const [expanded, setExpanded] = useState('')
+  const [openSub, setOpenSub] = useState('') // dropdown-ka desktop-ka ee furan
+  const closeTimer = useRef(null)
   const phones = lines(site.phones)
+
+  const showSub = (label) => {
+    clearTimeout(closeTimer.current)
+    setOpenSub(label)
+  }
+  const hideSubSoon = () => {
+    clearTimeout(closeTimer.current)
+    closeTimer.current = setTimeout(() => setOpenSub(''), 140)
+  }
+  // Marka la taabto/riixo link kasta: dropdown-ka isla markiiba waa xirmayaa
+  const closeAll = () => {
+    clearTimeout(closeTimer.current)
+    setOpenSub('')
+    if (document.activeElement && typeof document.activeElement.blur === 'function') document.activeElement.blur()
+  }
+  // Taleefan/tablet (hover ma jiro): taabasho koowaad wuu furaa dropdown-ka, taabasho labaad wuu tagaa bogga
+  const onParentClick = (e, label) => {
+    if (window.matchMedia('(hover: none)').matches && openSub !== label) {
+      e.preventDefault()
+      showSub(label)
+      return
+    }
+    closeAll()
+  }
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -25,6 +51,7 @@ export default function Header() {
   useEffect(() => {
     setOpen(false)
     setExpanded('')
+    setOpenSub('')
   }, [pathname])
 
   useEffect(() => {
@@ -33,6 +60,8 @@ export default function Header() {
       document.body.style.overflow = ''
     }
   }, [open])
+
+  useEffect(() => () => clearTimeout(closeTimer.current), [])
 
   const NAV = [
     { label: 'Home', to: '/', end: true },
@@ -85,7 +114,7 @@ export default function Header() {
       </div>
 
       <div className="container nav-bar">
-        <Link to="/" className="brand" aria-label={`${site.orgName} ${site.country} – Home`}>
+        <Link to="/" className="brand" aria-label={`${site.orgName} ${site.country} – Home`} onClick={closeAll}>
           <img src={logo} alt="" width="52" height="52" />
           <span className="brand-text">
             <strong>{site.orgName}</strong>
@@ -96,28 +125,44 @@ export default function Header() {
         <nav className="nav-desktop" aria-label="Main">
           {NAV.map((item) =>
             item.children ? (
-              <div className="nav-item has-sub" key={item.label}>
-                <NavLink to={item.to} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+              <div
+                className={`nav-item has-sub ${openSub === item.label ? 'open' : ''}`}
+                key={item.label}
+                onPointerEnter={(e) => e.pointerType === 'mouse' && showSub(item.label)}
+                onPointerLeave={(e) => e.pointerType === 'mouse' && hideSubSoon()}
+                onFocus={(e) => e.target.matches(':focus-visible') && showSub(item.label)}
+                onBlur={(e) => {
+                  if (!e.currentTarget.contains(e.relatedTarget)) setOpenSub('')
+                }}
+                onKeyDown={(e) => e.key === 'Escape' && setOpenSub('')}
+              >
+                <NavLink
+                  to={item.to}
+                  onClick={(e) => onParentClick(e, item.label)}
+                  aria-haspopup="true"
+                  aria-expanded={openSub === item.label}
+                  className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                >
                   {item.label}
                   <ChevronDown size={15} aria-hidden="true" />
                 </NavLink>
                 <div className="sub">
                   {item.children.map((c) => (
-                    <Link key={c.to} to={c.to}>
+                    <Link key={c.to} to={c.to} onClick={closeAll}>
                       {c.label}
                     </Link>
                   ))}
                 </div>
               </div>
             ) : (
-              <NavLink key={item.label} to={item.to} end={item.end} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+              <NavLink key={item.label} to={item.to} end={item.end} onClick={closeAll} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                 {item.label}
               </NavLink>
             ),
           )}
         </nav>
 
-        <Link to="/partner" className="btn btn-red nav-cta">
+        <Link to="/partner" className="btn btn-red nav-cta" onClick={closeAll}>
           Partner with us
         </Link>
 

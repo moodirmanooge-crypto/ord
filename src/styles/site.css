@@ -124,8 +124,7 @@
 .nav-link svg {
   transition: transform 0.2s;
 }
-.has-sub:hover .nav-link svg,
-.has-sub:focus-within .nav-link svg {
+.has-sub.open .nav-link svg {
   transform: rotate(180deg);
 }
 .sub {
@@ -143,8 +142,7 @@
   transform: translateY(8px);
   transition: opacity 0.2s, transform 0.2s var(--ease), visibility 0.2s;
 }
-.has-sub:hover .sub,
-.has-sub:focus-within .sub {
+.has-sub.open .sub {
   opacity: 1;
   visibility: visible;
   transform: none;

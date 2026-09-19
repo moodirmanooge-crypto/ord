@@ -1,0 +1,278 @@
+/* ==========================================================
+   RDA Somalia — animation-ka qoraalka & sawirada
+   (la soo dejiyo ugu dambeeyn, ka dib site.css)
+   ========================================================== */
+
+/* ---------- 1) Scroll reveal (waxaa xakameeya Reveal.jsx) ---------- */
+[data-rv] {
+  opacity: 0;
+  transition: opacity 0.9s var(--ease), transform 1s var(--ease), clip-path 1.15s var(--ease);
+  will-change: opacity, transform;
+}
+[data-rv='up'] {
+  transform: translateY(38px);
+}
+[data-rv='left'] {
+  transform: translateX(-52px);
+}
+[data-rv='right'] {
+  transform: translateX(52px);
+}
+[data-rv='pop'] {
+  transform: scale(0.78) rotate(-7deg);
+}
+/* sawirku wuxuu u furmaa sida daaqad */
+[data-rv='img'] {
+  transform: scale(1.12) translateY(26px);
+  clip-path: inset(12% 12% 12% 12% round 28px);
+}
+/* cinwaannada: wipe hoos ilaa hoos + kor u soo baxa */
+[data-rv='up']:is(h1, h2, h3, h4) {
+  transform: translateY(30px);
+  clip-path: inset(0 0 55% 0);
+}
+[data-rv][data-in] {
+  opacity: 1;
+  transform: none;
+}
+[data-rv='img'][data-in],
+[data-rv='up']:is(h1, h2, h3, h4)[data-in] {
+  clip-path: inset(-40px -40px -40px -40px round 0);
+}
+
+/* cascade — kuwa isku-mar soo muuqda waa is-xigaan */
+[data-d='1'] { transition-delay: 0.08s; }
+[data-d='2'] { transition-delay: 0.16s; }
+[data-d='3'] { transition-delay: 0.24s; }
+[data-d='4'] { transition-delay: 0.32s; }
+[data-d='5'] { transition-delay: 0.4s; }
+[data-d='6'] { transition-delay: 0.48s; }
+[data-d='7'] { transition-delay: 0.56s; }
+[data-d='8'] { transition-delay: 0.64s; }
+
+/* ---------- 2) Hero: cinwaan, sawir, logo ---------- */
+.hero h1,
+.banner h1 {
+  animation: titleIn 1.15s var(--ease) both;
+}
+@keyframes titleIn {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+    clip-path: inset(0 0 100% 0);
+    letter-spacing: 0.03em;
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(-30px -30px -50px -30px);
+    letter-spacing: -0.03em;
+  }
+}
+.hero-text {
+  animation-delay: 0.3s;
+}
+.hero-cta {
+  animation-delay: 0.5s;
+}
+.banner-crumb {
+  animation: rise 0.8s var(--ease) 0.05s both;
+}
+.banner-intro {
+  animation: rise 0.9s var(--ease) 0.35s both;
+}
+
+/* afarta tile waxay soo baxaan midba midka ka dambeeya */
+.hero-pillars {
+  animation: none;
+}
+.pillar-tile {
+  animation: tileUp 0.85s var(--ease) both;
+}
+.pillar-tile:nth-child(1) { animation-delay: 0.55s; }
+.pillar-tile:nth-child(2) { animation-delay: 0.68s; }
+.pillar-tile:nth-child(3) { animation-delay: 0.81s; }
+.pillar-tile:nth-child(4) { animation-delay: 0.94s; }
+.pillar-tile:nth-child(n + 5) { animation-delay: 1.05s; }
+@keyframes tileUp {
+  from {
+    opacity: 0;
+    transform: translateY(70px);
+  }
+}
+
+/* Ken Burns: sawirrada hero-ga waxay si tartiib ah u weynaadaan */
+.hero-photos img {
+  transform: scale(1.12);
+}
+.hero-photos img.on {
+  animation: kenburns 11s ease-out both;
+}
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+/* logo-ga hero-ga: dul-sabbayn + siman meerto */
+.hero-mark {
+  position: relative;
+  width: min(100%, 340px);
+}
+.hero-mark::before {
+  content: '';
+  position: absolute;
+  inset: -34px;
+  border-radius: 50%;
+  border: 2px dashed rgba(125, 192, 245, 0.5);
+  animation: spin 48s linear infinite;
+}
+.hero-mark::after {
+  content: '';
+  position: absolute;
+  inset: -64px;
+  border-radius: 50%;
+  border: 1px solid rgba(125, 192, 245, 0.18);
+  animation: spin 80s linear infinite reverse;
+}
+.hero-mark img {
+  position: relative;
+  animation: floaty 7s ease-in-out 1.4s infinite;
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+/* ---------- 3) Khariidadda dhulka: waa la sawiraa, kadibna si tartiib ah ayay u socotaa ---------- */
+.topo path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: topoDraw 2.8s var(--ease) forwards;
+  animation-delay: calc(var(--i, 0) * 95ms);
+}
+@keyframes topoDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.topo {
+  animation: topoDrift 30s ease-in-out infinite alternate;
+}
+@keyframes topoDrift {
+  from {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.07) translate3d(-14px, -8px, 0);
+  }
+}
+
+/* ---------- 4) Dropdown-ka nav-ka: links-ka waxay soo galaan midba midka ka dambeeya ---------- */
+.sub a {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.3s ease, transform 0.35s var(--ease), background 0.15s, color 0.15s;
+}
+.has-sub.open .sub a {
+  opacity: 1;
+  transform: none;
+}
+.has-sub.open .sub a:nth-child(1) { transition-delay: 0.04s; }
+.has-sub.open .sub a:nth-child(2) { transition-delay: 0.09s; }
+.has-sub.open .sub a:nth-child(3) { transition-delay: 0.14s; }
+.has-sub.open .sub a:nth-child(4) { transition-delay: 0.19s; }
+.has-sub.open .sub a:nth-child(n + 5) { transition-delay: 0.24s; }
+.has-sub.open .sub a:hover {
+  transform: translateX(4px);
+}
+
+/* ---------- 5) Hover: sawir, badhan, kaararka ---------- */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 -60%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.7s var(--ease);
+  pointer-events: none;
+}
+.btn:hover::after {
+  left: 130%;
+}
+.region-card img,
+.pillar-img,
+.article-img {
+  transition: transform 0.6s var(--ease);
+}
+.region-card:hover img {
+  transform: scale(1.04);
+}
+.pillar-img:hover,
+.article-img:hover {
+  transform: scale(1.015);
+}
+.person:hover .avatar {
+  transform: translateY(-4px) rotate(-2deg);
+}
+.pillar-tile:hover strong {
+  transform: translateX(4px);
+}
+.pillar-tile strong {
+  transition: transform 0.3s var(--ease);
+}
+.values li,
+.toc-flow li,
+.priority-grid article,
+.why-list li {
+  transition: transform 0.3s var(--ease);
+}
+.values li:hover,
+.toc-flow li:hover {
+  transform: translateY(-4px);
+}
+
+/* ---------- Reduced motion / print ---------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-rv] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+  .topo path {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+  .topo,
+  .hero-mark img,
+  .hero-mark::before,
+  .hero-mark::after,
+  .hero-photos img.on {
+    animation: none;
+  }
+  .sub a {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media print {
+  [data-rv] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+}

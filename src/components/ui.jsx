@@ -64,7 +64,7 @@ export function Topo({ className = '', rings = 15, seed = 1, cx = 1050, cy = 380
   return (
     <svg className={`topo ${className}`} viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
       {paths.map((d, i) => (
-        <path key={i} d={d} fill="none" strokeWidth={i % 5 === 0 ? 1.6 : 1} className={i % 5 === 0 ? 'topo-major' : 'topo-minor'} />
+        <path key={i} d={d} pathLength={1} style={{ '--i': i }} fill="none" strokeWidth={i % 5 === 0 ? 1.6 : 1} className={i % 5 === 0 ? 'topo-major' : 'topo-minor'} />
       ))}
     </svg>
   )
