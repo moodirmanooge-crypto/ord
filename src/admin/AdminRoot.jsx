@@ -14,6 +14,7 @@ import {
   MapPin,
   Menu,
   Newspaper,
+  PanelTop,
   Settings,
   UserCog,
   Users,
@@ -34,6 +35,7 @@ import GalleryManager from './GalleryManager'
 import Messages from './Messages'
 import SubAdmins from './SubAdmins'
 import Account from './Account'
+import MenuManager from './MenuManager'
 import '../styles/admin.css'
 
 const ICONS = {
@@ -41,6 +43,7 @@ const ICONS = {
   image: ImageIcon,
   globe: Globe,
   file: FileText,
+  menu: PanelTop,
   layers: Layers,
   map: MapPin,
   users: Users,
@@ -140,6 +143,7 @@ function Shell() {
           />
           <Route path="site" element={guard('site', <SettingsForm title="Macluumaadka Website" hint="Magaca, logo, xiriirka, bulshada iyo qoraallada About." groups={SITE_GROUPS} />)} />
           <Route path="content" element={guard('content', <SettingsForm title="Qoraallada Bogagga" hint="Qoraallada bogagga Programs, Leadership, Impact iyo Partner." groups={CONTENT_GROUPS} />)} />
+          <Route path="menu" element={guard('menu', <MenuManager />)} />
           <Route
             path="programs"
             element={guard(

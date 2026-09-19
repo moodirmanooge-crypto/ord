@@ -1,3 +1,5 @@
+import { DEFAULT_MENU } from './defaultMenu'
+
 // Xogta asalka ah ee website-ka — waxaa laga qaaday RDA Organizational Profile (2026).
 // Admin panel-ka ayaa wax walba ka beddeli kara; xogtan waa "fallback" marka Firestore madhan yahay.
 
@@ -10,7 +12,7 @@ export const DEFAULT_SITE = {
   heroText:
     'Rural Development Aid is an independent, Somali-led, multisectoral non-profit delivering integrated humanitarian and development programming across the Federal Republic of Somalia.',
 
-  phones: '+252 61 5355674\n+252 615556306\n+252 615931926',
+  phones: '+252 617125933\n+252 615556306\n+252 615931926',
   email: 'info@rda-somalia.org',
   website: 'www.rda-somalia.org',
   address: 'Head Office: Mogadishu, Banadir Region, Somalia',
@@ -395,4 +397,5 @@ export const DEFAULTS = {
   rda_programs: DEFAULT_PROGRAMS,
   rda_regions: DEFAULT_REGIONS,
   rda_team: DEFAULT_TEAM,
+  rda_menu: DEFAULT_MENU,
 }

@@ -245,6 +245,38 @@
   transform: translateY(-4px);
 }
 
+/* ---------- 6) Nav-ka: marka items badan la geliyo (8+) ---------- */
+.nav-cta {
+  flex-shrink: 0;
+}
+.site-header.many .nav-bar {
+  width: min(100% - 2 * var(--gutter), 1380px);
+}
+.site-header.many .nav-link {
+  padding: 10px 8px;
+  font-size: 0.92rem;
+}
+.site-header.many .nav-link::after {
+  left: 8px;
+  right: 8px;
+}
+@media (max-width: 1400px) {
+  .site-header.many .nav-desktop,
+  .site-header.many .nav-cta {
+    display: none;
+  }
+  .site-header.many .burger {
+    display: inline-grid;
+  }
+}
+.site-header.xmany .nav-desktop,
+.site-header.xmany .nav-cta {
+  display: none;
+}
+.site-header.xmany .burger {
+  display: inline-grid;
+}
+
 /* ---------- Reduced motion / print ---------- */
 @media (prefers-reduced-motion: reduce) {
   [data-rv] {

@@ -31,4 +31,6 @@ export const COL = {
   gallery: 'rda_gallery',
   partners: 'rda_partners',
   messages: 'rda_messages',
+  menu: 'rda_menu', // navbar + dropdown-yada
+  pages: 'rda_pages', // bogagga cusub ee dropdown-yada (macluumaadkooda)
 }

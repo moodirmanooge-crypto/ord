@@ -21,7 +21,7 @@ export async function seedAllIfNeeded() {
   const snap = await getDoc(ref)
   if (snap.exists()) return false
   const batch = writeBatch(db)
-  batch.set(ref, { ...DEFAULT_SITE, seeded: { rda_programs: true, rda_regions: true, rda_team: true }, createdAt: serverTimestamp() })
+  batch.set(ref, { ...DEFAULT_SITE, seeded: Object.fromEntries(Object.keys(DEFAULTS).map((k) => [k, true])), createdAt: serverTimestamp() })
   Object.entries(DEFAULTS).forEach(([name, items]) => {
     items.forEach((it, i) => {
       const { id, ...rest } = it

@@ -208,6 +208,7 @@ export const MODULES = [
   { key: 'hero', label: 'Hero Sawirada', path: 'hero', icon: 'image' },
   { key: 'site', label: 'Macluumaadka Website', path: 'site', icon: 'globe' },
   { key: 'content', label: 'Qoraallada Bogagga', path: 'content', icon: 'file' },
+  { key: 'menu', label: 'Navbar & Dropdown', path: 'menu', icon: 'menu' },
   { key: 'programs', label: 'Barnaamijyada', path: 'programs', icon: 'layers' },
   { key: 'regions', label: 'Goobaha Shaqada', path: 'regions', icon: 'map' },
   { key: 'team', label: 'Hoggaanka & Board', path: 'team', icon: 'users' },

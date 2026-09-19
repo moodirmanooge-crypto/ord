@@ -1,14 +1,32 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, Menu, Phone, Mail, X } from 'lucide-react'
 import { useSite, useContent } from '../lib/data'
 import { lines, telHref } from '../lib/text'
+import { buildNav, isExternal } from '../lib/menu'
 import { useLogo } from './ui'
+
+// Link gudaha ah (router) ama dibadda ah (<a>)
+function MenuLink({ to, newTab, onClick, className, children }) {
+  if (isExternal(to) || newTab) {
+    return (
+      <a href={to} target={newTab || /^https?:/i.test(to) ? '_blank' : undefined} rel="noreferrer" className={className} onClick={onClick}>
+        {children}
+      </a>
+    )
+  }
+  return (
+    <Link to={to} className={className} onClick={onClick}>
+      {children}
+    </Link>
+  )
+}
 
 export default function Header() {
   const { site } = useSite()
   const logo = useLogo()
   const { items: programs } = useContent('rda_programs')
+  const { items: menu } = useContent('rda_menu')
   const { pathname } = useLocation()
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -17,9 +35,13 @@ export default function Header() {
   const closeTimer = useRef(null)
   const phones = lines(site.phones)
 
-  const showSub = (label) => {
+  const NAV = useMemo(() => buildNav(menu, programs), [menu, programs])
+  // Marka items badan la geliyo, nav-ku wuu isku hagaajiyaa (ku habboon shaashad kasta)
+  const density = NAV.length >= 10 ? 'xmany' : NAV.length >= 8 ? 'many' : ''
+
+  const showSub = (id) => {
     clearTimeout(closeTimer.current)
-    setOpenSub(label)
+    setOpenSub(id)
   }
   const hideSubSoon = () => {
     clearTimeout(closeTimer.current)
@@ -32,10 +54,10 @@ export default function Header() {
     if (document.activeElement && typeof document.activeElement.blur === 'function') document.activeElement.blur()
   }
   // Taleefan/tablet (hover ma jiro): taabasho koowaad wuu furaa dropdown-ka, taabasho labaad wuu tagaa bogga
-  const onParentClick = (e, label) => {
-    if (window.matchMedia('(hover: none)').matches && openSub !== label) {
+  const onParentClick = (e, id) => {
+    if (window.matchMedia('(hover: none)').matches && openSub !== id) {
       e.preventDefault()
-      showSub(label)
+      showSub(id)
       return
     }
     closeAll()
@@ -63,38 +85,8 @@ export default function Header() {
 
   useEffect(() => () => clearTimeout(closeTimer.current), [])
 
-  const NAV = [
-    { label: 'Home', to: '/', end: true },
-    {
-      label: 'About',
-      to: '/about',
-      children: [
-        { label: 'Who we are', to: '/about' },
-        { label: 'Vision, mission & values', to: '/about#vision' },
-        { label: 'Strategy & theory of change', to: '/about#strategy' },
-        { label: 'Leadership & Board', to: '/leadership' },
-      ],
-    },
-    {
-      label: 'Programs',
-      to: '/programs',
-      children: programs.map((p) => ({ label: p.title, to: `/programs#${p.slug || p.id}` })),
-    },
-    { label: 'Where we work', to: '/where-we-work' },
-    { label: 'Impact', to: '/impact' },
-    {
-      label: 'Media',
-      to: '/news',
-      children: [
-        { label: 'News & updates', to: '/news' },
-        { label: 'Photo gallery', to: '/gallery' },
-      ],
-    },
-    { label: 'Contact', to: '/contact' },
-  ]
-
   return (
-    <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${open ? 'menu-open' : ''}`}>
+    <header className={`site-header ${density} ${scrolled ? 'is-scrolled' : ''} ${open ? 'menu-open' : ''}`}>
       <div className="utility">
         <div className="container utility-inner">
           <p>{site.tagline}</p>
@@ -123,43 +115,63 @@ export default function Header() {
         </Link>
 
         <nav className="nav-desktop" aria-label="Main">
-          {NAV.map((item) =>
-            item.children ? (
+          {NAV.map((item) => {
+            const isDrop = item.children.length > 0
+            if (!isDrop) {
+              return isExternal(item.to) || item.newTab ? (
+                <MenuLink key={item.id} to={item.to} newTab={item.newTab} onClick={closeAll} className="nav-link">
+                  {item.label}
+                </MenuLink>
+              ) : (
+                <NavLink key={item.id} to={item.to} end={item.end} onClick={closeAll} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                  {item.label}
+                </NavLink>
+              )
+            }
+            return (
               <div
-                className={`nav-item has-sub ${openSub === item.label ? 'open' : ''}`}
-                key={item.label}
-                onPointerEnter={(e) => e.pointerType === 'mouse' && showSub(item.label)}
+                className={`nav-item has-sub ${openSub === item.id ? 'open' : ''}`}
+                key={item.id}
+                onPointerEnter={(e) => e.pointerType === 'mouse' && showSub(item.id)}
                 onPointerLeave={(e) => e.pointerType === 'mouse' && hideSubSoon()}
-                onFocus={(e) => e.target.matches(':focus-visible') && showSub(item.label)}
+                onFocus={(e) => e.target.matches(':focus-visible') && showSub(item.id)}
                 onBlur={(e) => {
                   if (!e.currentTarget.contains(e.relatedTarget)) setOpenSub('')
                 }}
                 onKeyDown={(e) => e.key === 'Escape' && setOpenSub('')}
               >
-                <NavLink
-                  to={item.to}
-                  onClick={(e) => onParentClick(e, item.label)}
-                  aria-haspopup="true"
-                  aria-expanded={openSub === item.label}
-                  className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                >
-                  {item.label}
-                  <ChevronDown size={15} aria-hidden="true" />
-                </NavLink>
+                {!item.to ? (
+                  <button type="button" className="nav-link" aria-haspopup="true" aria-expanded={openSub === item.id} onClick={() => (openSub === item.id ? setOpenSub('') : showSub(item.id))}>
+                    {item.label}
+                    <ChevronDown size={15} aria-hidden="true" />
+                  </button>
+                ) : isExternal(item.to) || item.newTab ? (
+                  <MenuLink to={item.to} newTab={item.newTab} onClick={(e) => onParentClick(e, item.id)} className="nav-link">
+                    {item.label}
+                    <ChevronDown size={15} aria-hidden="true" />
+                  </MenuLink>
+                ) : (
+                  <NavLink
+                    to={item.to}
+                    onClick={(e) => onParentClick(e, item.id)}
+                    aria-haspopup="true"
+                    aria-expanded={openSub === item.id}
+                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                  >
+                    {item.label}
+                    <ChevronDown size={15} aria-hidden="true" />
+                  </NavLink>
+                )}
                 <div className="sub">
                   {item.children.map((c) => (
-                    <Link key={c.to} to={c.to} onClick={closeAll}>
+                    <MenuLink key={c.id} to={c.to} newTab={c.newTab} onClick={closeAll}>
                       {c.label}
-                    </Link>
+                    </MenuLink>
                   ))}
                 </div>
               </div>
-            ) : (
-              <NavLink key={item.label} to={item.to} end={item.end} onClick={closeAll} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-                {item.label}
-              </NavLink>
-            ),
-          )}
+            )
+          })}
         </nav>
 
         <Link to="/partner" className="btn btn-red nav-cta" onClick={closeAll}>
@@ -174,24 +186,28 @@ export default function Header() {
       <div className={`mobile-menu ${open ? 'open' : ''}`} aria-hidden={!open}>
         <nav aria-label="Mobile">
           {NAV.map((item) =>
-            item.children ? (
-              <div className="m-group" key={item.label}>
-                <button type="button" className="m-toggle" aria-expanded={expanded === item.label} onClick={() => setExpanded(expanded === item.label ? '' : item.label)}>
+            item.children.length > 0 ? (
+              <div className="m-group" key={item.id}>
+                <button type="button" className="m-toggle" aria-expanded={expanded === item.id} onClick={() => setExpanded(expanded === item.id ? '' : item.id)}>
                   {item.label}
                   <ChevronDown size={20} />
                 </button>
-                <div className={`m-sub ${expanded === item.label ? 'open' : ''}`}>
+                <div className={`m-sub ${expanded === item.id ? 'open' : ''}`}>
                   <div>
                     {item.children.map((c) => (
-                      <Link key={c.to} to={c.to}>
+                      <MenuLink key={c.id} to={c.to} newTab={c.newTab}>
                         {c.label}
-                      </Link>
+                      </MenuLink>
                     ))}
                   </div>
                 </div>
               </div>
+            ) : isExternal(item.to) || item.newTab ? (
+              <MenuLink key={item.id} to={item.to} newTab={item.newTab} className="m-link">
+                {item.label}
+              </MenuLink>
             ) : (
-              <NavLink key={item.label} to={item.to} end={item.end} className="m-link">
+              <NavLink key={item.id} to={item.to} end={item.end} className="m-link">
                 {item.label}
               </NavLink>
             ),

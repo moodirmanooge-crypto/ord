@@ -16,6 +16,7 @@ import News from './pages/News'
 import NewsDetail from './pages/NewsDetail'
 import Gallery from './pages/Gallery'
 import Contact from './pages/Contact'
+import CustomPage from './pages/CustomPage'
 import NotFound from './pages/NotFound'
 
 const AdminRoot = lazy(() => import('./admin/AdminRoot'))
@@ -61,6 +62,7 @@ export default function App() {
           <Route path="news/:id" element={<NewsDetail />} />
           <Route path="gallery" element={<Gallery />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="p/:slug" element={<CustomPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

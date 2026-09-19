@@ -1,0 +1,98 @@
+/* Bogagga cusub ee laga sameeyo dropdown-yada (/p/:slug) */
+.cp-hero {
+  margin: 0;
+}
+.cp-hero img {
+  width: 100%;
+  max-height: 560px;
+  aspect-ratio: 16 / 8;
+  object-fit: cover;
+  border-radius: 24px;
+}
+.cp-split .prose p,
+.cp-split .prose li {
+  color: var(--ink-2);
+  max-width: 68ch;
+}
+.cp-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+.cp-single .prose {
+  max-width: 78ch;
+}
+.cp-fig {
+  margin: 0;
+}
+.cp-fig img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 22px;
+}
+.cp-list {
+  margin: 0 0 1.1em;
+  padding-left: 1.2em;
+}
+.cp-list li {
+  margin-bottom: 6px;
+}
+.cp-list li::marker {
+  color: var(--green);
+}
+@media (min-width: 901px) {
+  .cp-rev .prose {
+    order: 2;
+  }
+  .cp-rev .cp-fig {
+    order: 1;
+  }
+  .cp-rev {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+}
+.cp-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+.cp-gallery a {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--paper);
+}
+.cp-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+}
+.cp-gallery a:hover img {
+  transform: scale(1.05);
+}
+.cp-gallery span {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 26px 12px 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  background: linear-gradient(transparent, rgba(5, 22, 41, 0.78));
+}
+.cp-cta {
+  padding: clamp(48px, 7vw, 84px) 0;
+  background: var(--blue-700);
+  color: #fff;
+}
+.cp-cta .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px 40px;
+}
+.cp-cta h2 {
+  font-size: clamp(1.6rem, 3.4vw, 2.4rem);
+  max-width: 24ch;
+}
