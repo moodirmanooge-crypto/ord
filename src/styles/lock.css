@@ -1,0 +1,77 @@
+/* Admin lock screen */
+.lock-badge {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 20px;
+  background: var(--navy-800);
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(10, 37, 64, 0.25);
+  animation: lockPop 0.6s var(--ease) both;
+}
+@keyframes lockPop {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.85) rotate(-8deg);
+  }
+}
+.login-card[data-shake] {
+  animation: lockShake 0.4s ease;
+}
+@keyframes lockShake {
+  20%,
+  60% {
+    transform: translateX(-8px);
+  }
+  40%,
+  80% {
+    transform: translateX(8px);
+  }
+}
+.lock-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.lock-user .avatar-a {
+  width: 44px;
+  height: 44px;
+  font-size: 1.1rem;
+}
+.lock-user > div {
+  display: grid;
+  line-height: 1.25;
+  min-width: 0;
+}
+.lock-user strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lock-user small {
+  color: var(--ink-3);
+}
+.lock-switch {
+  margin-left: auto;
+  padding: 7px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 9px;
+  background: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.lock-switch:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lock-badge,
+  .login-card[data-shake] {
+    animation: none;
+  }
+}

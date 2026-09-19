@@ -3,14 +3,29 @@ import { collection, doc, getDocs, onSnapshot, query, where } from 'firebase/fir
 import { db, COL } from '../firebase'
 import { seedAllIfNeeded } from '../lib/seed'
 
-const KEY = 'rda_admin_session'
+const KEY = 'rda_admin_session' // sessionStorage: marka tab-ka la xidho, admin-ku wuu xirmayaa (lock screen)
+const LAST = 'rda_admin_last_user' // localStorage: magaca la xasuusto si loo buuxiyo lock screen-ka
 const SUPER_ROLES = ['admin', 'superadmin', 'super-admin', 'super_admin', 'super admin']
+
+// Session-kii hore ee localStorage lama isticmaalo — link-ga /admin had iyo jeer wuxuu keenaa lock screen-ka
+try {
+  localStorage.removeItem(KEY)
+} catch {
+  /* ignore */
+}
 
 const readSession = () => {
   try {
-    return JSON.parse(localStorage.getItem(KEY) || 'null')?.id || null
+    return JSON.parse(sessionStorage.getItem(KEY) || 'null')?.id || null
   } catch {
     return null
+  }
+}
+const readLast = () => {
+  try {
+    return localStorage.getItem(LAST) || ''
+  } catch {
+    return ''
   }
 }
 
@@ -34,6 +49,7 @@ export function AuthProvider({ children }) {
   const [sessionId, setSessionId] = useState(readSession)
   const [user, setUser] = useState(null)
   const [ready, setReady] = useState(!readSession())
+  const [lastUser, setLastUser] = useState(readLast)
   const attempts = useRef({ n: 0, until: 0 })
   const seeded = useRef(false)
 
@@ -48,7 +64,7 @@ export function AuthProvider({ children }) {
       doc(db, COL.admins, sessionId),
       (snap) => {
         if (!snap.exists() || snap.data().active === false) {
-          localStorage.removeItem(KEY)
+          sessionStorage.removeItem(KEY)
           setSessionId(null)
           setUser(null)
         } else {
@@ -96,18 +112,32 @@ export function AuthProvider({ children }) {
       throw new Error('Username ama password waa khaldan yahay.')
     }
     attempts.current = { n: 0, until: 0 }
-    localStorage.setItem(KEY, JSON.stringify({ id: match.id }))
+    sessionStorage.setItem(KEY, JSON.stringify({ id: match.id }))
+    try {
+      localStorage.setItem(LAST, String(match.data().username || u))
+    } catch {
+      /* ignore */
+    }
     setSessionId(match.id)
   }, [])
 
   const logout = useCallback(() => {
-    localStorage.removeItem(KEY)
+    sessionStorage.removeItem(KEY)
     setSessionId(null)
     setUser(null)
   }, [])
 
+  const forgetUser = useCallback(() => {
+    try {
+      localStorage.removeItem(LAST)
+    } catch {
+      /* ignore */
+    }
+    setLastUser('')
+  }, [])
+
   const can = useCallback((key) => !!user && (user.isSuper || key === 'dashboard' || key === 'account' || user.permissions.includes(key)), [user])
 
-  const value = useMemo(() => ({ user, ready, login, logout, can }), [user, ready, login, logout, can])
+  const value = useMemo(() => ({ user, ready, login, logout, can, lastUser, forgetUser }), [user, ready, login, logout, can, lastUser, forgetUser])
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>
 }
