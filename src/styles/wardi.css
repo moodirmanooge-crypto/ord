@@ -1,0 +1,648 @@
+/* ==========================================================
+   RDA Somalia — navbar, hero slider iyo dhaqdhaqaaq sida wardirelief.org
+   (la soo dejiyo ugu dambeeyn, ka dib motion.css)
+   ========================================================== */
+:root {
+  /* Midabka navbar-ka: halkan ka beddel si aad u bedesho midabka oo dhan */
+  --nav-bg: var(--blue-700);
+  --nav-line: rgba(255, 255, 255, 0.2);
+}
+html {
+  scroll-padding-top: 70px;
+}
+.pillar {
+  scroll-margin-top: 70px;
+}
+
+/* ---------- 1) Header: utility + brand bar + solid nav strip ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  color: var(--ink);
+  background: #fff;
+  box-shadow: 0 2px 16px rgba(5, 22, 41, 0.1);
+}
+.site-header.is-scrolled {
+  background: #fff;
+  color: var(--ink);
+}
+.utility {
+  background: var(--navy-900);
+  color: #fff;
+}
+.utility-social {
+  display: inline-flex;
+  gap: 4px;
+  padding-left: 18px;
+  border-left: 1px solid var(--line-dark);
+}
+.utility-social a {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+.utility-social a:hover {
+  background: rgba(255, 255, 255, 0.16);
+  text-decoration: none;
+}
+
+.brandbar {
+  max-height: 130px;
+  background: #fff;
+  transition: max-height 0.35s var(--ease), opacity 0.25s;
+}
+.brandbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  min-height: 84px;
+  padding-block: 10px;
+}
+.brand {
+  margin-right: auto;
+}
+.brand img {
+  box-shadow: 0 0 0 1px var(--line);
+}
+.brand-text strong {
+  color: var(--navy-800);
+}
+.brand-text small {
+  color: var(--ink-3);
+  opacity: 1;
+}
+.brandbar-info {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.info-item > svg {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--blue) 12%, #fff);
+  color: var(--blue-700);
+}
+.info-item span {
+  display: grid;
+  line-height: 1.25;
+}
+.info-item small {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.info-item b {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+}
+.info-item:hover b {
+  color: var(--blue);
+}
+.brandbar .burger {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+/* strip-ka midabka leh */
+.navstrip {
+  background: var(--nav-bg);
+  color: #fff;
+}
+.navstrip-inner {
+  display: flex;
+  align-items: stretch;
+}
+.strip-logo {
+  display: none;
+  align-items: center;
+  padding: 0 16px 0 0;
+}
+.strip-logo img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+}
+.nav-desktop {
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0;
+  min-width: 0;
+}
+.nav-desktop > .nav-link,
+.nav-desktop > .nav-item {
+  border-right: 1px solid var(--nav-line);
+}
+.nav-desktop > :first-child {
+  border-left: 1px solid var(--nav-line);
+}
+.nav-item {
+  display: flex;
+}
+.nav-link {
+  min-height: 58px;
+  padding: 0 24px;
+  gap: 7px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  transition: background 0.2s;
+}
+.nav-link::after {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: #fff;
+}
+.nav-link:hover,
+.has-sub.open > .nav-link {
+  background: rgba(255, 255, 255, 0.12);
+}
+.nav-link.active {
+  background: rgba(255, 255, 255, 0.08);
+}
+.nav-link svg {
+  opacity: 0.9;
+}
+.sub {
+  top: 100%;
+  min-width: 300px;
+  padding: 8px;
+  border-top: 3px solid var(--red);
+  border-radius: 0 0 14px 14px;
+  text-transform: none;
+  letter-spacing: 0;
+  transform: translateY(6px);
+  box-shadow: 0 22px 44px rgba(5, 22, 41, 0.22);
+}
+.sub a {
+  opacity: 1;
+  transform: none;
+  transition: background 0.15s, color 0.15s;
+  font-family: var(--font-body);
+}
+.has-sub.open .sub a:hover {
+  transform: none;
+}
+.site-header.is-scrolled .strip-logo {
+  display: flex;
+}
+@media (min-width: 1141px) {
+  .site-header.is-scrolled .brandbar {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+  }
+  .site-header.is-scrolled .brandbar-inner {
+    min-height: 0;
+    padding-block: 0;
+  }
+}
+@media (max-width: 1140px) {
+  .navstrip {
+    display: none;
+  }
+  .brandbar-info {
+    display: none;
+  }
+  .brandbar-inner {
+    min-height: 70px;
+  }
+  .brandbar .burger {
+    display: inline-grid;
+  }
+}
+.site-header.menu-open .brandbar {
+  background: transparent;
+}
+.site-header.menu-open .brand-text strong,
+.site-header.menu-open .brand-text small {
+  color: #fff;
+}
+.site-header.menu-open .brandbar .burger {
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+.site-header.menu-open .navstrip {
+  display: none;
+}
+
+/* Header-ka hadda ma daboolayo hero-ga, sidaa darteed padding-ka waa la yareeyay */
+.hero-inner {
+  padding-top: 72px;
+  padding-bottom: 92px;
+  min-height: min(68svh, 600px);
+}
+.banner {
+  padding: 64px 0 64px;
+}
+@media (max-width: 900px) {
+  .hero-inner {
+    padding-top: 44px;
+    padding-bottom: 56px;
+    min-height: 0;
+  }
+  .banner {
+    padding: 44px 0 48px;
+  }
+}
+
+/* ---------- 2) Slider-ka sawirrada hero-ga (sida Slider Revolution) ---------- */
+.wslider {
+  position: relative;
+  height: clamp(380px, 74vh, 760px);
+  overflow: hidden;
+  background: var(--navy-900);
+  color: #fff;
+  outline: none;
+}
+.wslide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1.2s ease, visibility 0s linear 1.2s;
+}
+.wslide.on {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+  transition: opacity 1.2s ease;
+}
+.wslide img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.14);
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.wslide.on img {
+  animation: wKen 12s ease-out both;
+}
+@keyframes wKen {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+.wslide-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(4, 18, 32, 0.25) 0%, rgba(4, 18, 32, 0) 40%, rgba(4, 18, 32, 0.45) 100%);
+}
+.wcap-wrap {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+.wcap {
+  max-width: min(100%, 880px);
+  padding-bottom: 34px;
+}
+.wcap-in {
+  position: relative;
+  display: inline-block;
+  padding: clamp(14px, 2vw, 26px) clamp(18px, 2.8vw, 40px);
+}
+.wcap-in::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 18, 32, 0.66);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.wslide.on .wcap-in::before {
+  animation: wBox 0.9s 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+@keyframes wBox {
+  to {
+    transform: scaleX(1);
+  }
+}
+.wcap h2 {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 3.7vw, 3.1rem);
+  font-weight: 600;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.wcap h2 a {
+  color: inherit;
+  text-decoration: none;
+}
+.wcap h2 a:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+.wcap h2 span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(26px);
+}
+.wslide.on .wcap h2 span {
+  animation: wWord 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: calc(0.75s + var(--w, 0) * 70ms);
+}
+@keyframes wWord {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.wcap-cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+  opacity: 0;
+  transform: translateY(18px);
+}
+.wslide.on .wcap-cta {
+  animation: wWord 0.8s 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+.wnav {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(4, 18, 32, 0.5);
+  color: #fff;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.25s, background 0.2s;
+}
+.wprev {
+  left: 18px;
+}
+.wnext {
+  right: 18px;
+}
+.wslider:hover .wnav,
+.wslider:focus-within .wnav {
+  opacity: 1;
+}
+.wnav:hover {
+  background: var(--blue);
+}
+.wdots {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+.wdots button {
+  width: 13px;
+  height: 13px;
+  padding: 0;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  background: rgba(20, 28, 38, 0.75);
+  transition: background 0.25s, transform 0.25s, border-color 0.25s;
+}
+.wdots button:hover {
+  transform: scale(1.2);
+}
+.wdots button.on {
+  background: #1b8cff;
+  border-color: #fff;
+  transform: scale(1.2);
+}
+@media (max-width: 720px) {
+  .wslider {
+    height: clamp(340px, 66vh, 520px);
+  }
+  .wcap {
+    padding-bottom: 44px;
+  }
+  .wnav {
+    display: none;
+  }
+  .wcap-cta .btn {
+    padding: 11px 16px;
+    font-size: 0.92rem;
+  }
+}
+
+/* ---------- 3) Tirooyinka (count-up) ---------- */
+.stats-band {
+  background: var(--blue-700);
+  color: #fff;
+  padding: clamp(40px, 6vw, 72px) 0;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+.stat {
+  display: grid;
+  gap: 6px;
+  padding: 10px 24px;
+  text-align: center;
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
+}
+.stat:first-child {
+  border-left: 0;
+}
+.stat b {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 6vw, 4.2rem);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat span {
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+@media (max-width: 720px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 0;
+  }
+  .stat:nth-child(odd) {
+    border-left: 0;
+  }
+}
+
+/* ---------- 4) Iskaashatada: carousel toos ah oo is-socda ---------- */
+.marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: wMarquee 38s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-item {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  padding: 0 34px;
+}
+.marquee-item img {
+  height: 64px;
+  width: auto;
+  max-width: 190px;
+  object-fit: contain;
+  filter: grayscale(1);
+  opacity: 0.8;
+  transition: filter 0.2s, opacity 0.2s;
+}
+.marquee-item:hover img {
+  filter: none;
+  opacity: 1;
+}
+.marquee-item span {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.marquee-item a {
+  text-decoration: none;
+}
+@keyframes wMarquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- 5) Dhaqdhaqaaqa guud: kaliya sida wardirelief.org (fadeInUp / fadeInLeft / fadeInRight / zoomIn) ---------- */
+[data-rv],
+[data-rv='up']:is(h1, h2, h3, h4),
+[data-rv='img'] {
+  clip-path: none;
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+[data-rv='up'],
+[data-rv='up']:is(h1, h2, h3, h4) {
+  transform: translateY(42px);
+}
+[data-rv='left'] {
+  transform: translateX(-60px);
+}
+[data-rv='right'] {
+  transform: translateX(60px);
+}
+[data-rv='img'] {
+  transform: scale(0.9);
+}
+[data-rv='pop'] {
+  transform: scale(0.85);
+}
+[data-rv][data-in],
+[data-rv='up']:is(h1, h2, h3, h4)[data-in],
+[data-rv='img'][data-in] {
+  clip-path: none;
+  opacity: 1;
+  transform: none;
+}
+
+/* cinwaannada hero/banner: fadeInUp caadi ah */
+.hero h1,
+.banner h1 {
+  animation: wFadeUp 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+@keyframes wFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+  }
+}
+
+/* wixii dheeraad ah ee hore (aan ku jirin wardirelief.org) waa la damiyay */
+.topo path {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+.topo {
+  animation: none;
+}
+.hero-mark img {
+  animation: none;
+}
+.hero-mark::before,
+.hero-mark::after {
+  display: none;
+}
+.btn::after {
+  display: none;
+}
+.sub a,
+.has-sub.open .sub a {
+  transition-delay: 0s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wslide,
+  .wslide.on {
+    transition: none;
+  }
+  .wslide.on img {
+    animation: none;
+    transform: none;
+  }
+  .wcap-in::before {
+    transform: none;
+    animation: none;
+  }
+  .wcap h2 span,
+  .wcap-cta {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}

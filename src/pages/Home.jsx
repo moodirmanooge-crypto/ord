@@ -1,35 +1,155 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Mail } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Mail } from 'lucide-react'
 import { useContent, useSite, colorVar } from '../lib/data'
 import { paras, rows, titled } from '../lib/text'
 import { Section, Topo, ProgramIcon, useLogo, usePageTitle } from '../components/ui'
 import { NewsCard, sortNews } from '../components/cards'
 
+const isExt = (u = '') => /^(https?:|mailto:|tel:)/i.test(u)
+const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// Afarta barnaamij (tile) — hero-ga hoostiisa
+function PillarStrip({ programs }) {
+  return (
+    <div className="hero-pillars">
+      {programs.map((p) => (
+        <Link key={p.id} to={`/programs#${p.slug || p.id}`} className="pillar-tile" style={{ '--tile': colorVar(p.color) }}>
+          <ProgramIcon name={p.icon} />
+          <strong>{p.title}</strong>
+          <span>{p.subtitle}</span>
+        </Link>
+      ))}
+    </div>
+  )
+}
+
+// Qoraalka sawirka: erey-erey ayuu u soo baxaa (animation)
+function Words({ text }) {
+  return String(text)
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w, k) => (
+      <Fragment key={k}>
+        <span style={{ '--w': k }}>{w}</span>{' '}
+      </Fragment>
+    ))
+}
+
+// Slider-ka sawirrada hero-ga (sawirada admin-ku soo geliyo): Ken Burns + caption box + dots + swipe
+function HeroSlider({ photos, programs }) {
+  const { site } = useSite()
+  const [i, setI] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const touch = useRef(null)
+  const n = photos.length
+  const cur = i % n
+  const go = useCallback((d) => setI((x) => (x + d + n) % n), [n])
+
+  useEffect(() => {
+    if (n < 2 || paused || prefersReduced()) return undefined
+    const t = setInterval(() => setI((x) => (x + 1) % n), 6800)
+    return () => clearInterval(t)
+  }, [n, paused])
+
+  return (
+    <>
+      <section
+        className="wslider"
+        aria-roledescription="carousel"
+        aria-label="RDA"
+        tabIndex={0}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+        onKeyDown={(e) => {
+          if (e.key === 'ArrowRight') go(1)
+          if (e.key === 'ArrowLeft') go(-1)
+        }}
+        onTouchStart={(e) => {
+          touch.current = e.touches[0].clientX
+        }}
+        onTouchEnd={(e) => {
+          if (touch.current === null) return
+          const dx = e.changedTouches[0].clientX - touch.current
+          touch.current = null
+          if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1)
+        }}
+      >
+        {photos.map((s, k) => {
+          const on = k === cur
+          const text = s.caption || site.heroTitle
+          const title = <Words text={text} />
+          return (
+            <div key={s.id} className={`wslide ${on ? 'on' : ''}`} aria-hidden={!on} role="group" aria-roledescription="slide" aria-label={`${k + 1} / ${n}`}>
+              <img src={s.image} alt="" loading={k === 0 ? 'eager' : 'lazy'} draggable="false" />
+              <div className="wslide-shade" />
+              <div className="container wcap-wrap">
+                <div className="wcap">
+                  <div className="wcap-in">
+                    <h2>
+                      {s.link ? (
+                        isExt(s.link) ? (
+                          <a href={s.link} target="_blank" rel="noreferrer" tabIndex={on ? 0 : -1}>
+                            {title}
+                          </a>
+                        ) : (
+                          <Link to={s.link} tabIndex={on ? 0 : -1}>
+                            {title}
+                          </Link>
+                        )
+                      ) : (
+                        title
+                      )}
+                    </h2>
+                  </div>
+                  <div className="wcap-cta">
+                    <Link to="/programs" className="btn btn-light" tabIndex={on ? 0 : -1}>
+                      Explore our programs
+                    </Link>
+                    <Link to="/partner" className="btn btn-outline-light" tabIndex={on ? 0 : -1}>
+                      Partner with us
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })}
+
+        {n > 1 && (
+          <>
+            <button type="button" className="wnav wprev" onClick={() => go(-1)} aria-label="Previous image">
+              <ChevronLeft size={28} />
+            </button>
+            <button type="button" className="wnav wnext" onClick={() => go(1)} aria-label="Next image">
+              <ChevronRight size={28} />
+            </button>
+            <div className="wdots" role="tablist" aria-label="Hero images">
+              {photos.map((s, k) => (
+                <button key={s.id} type="button" role="tab" aria-selected={k === cur} className={k === cur ? 'on' : ''} onClick={() => setI(k)} aria-label={`Image ${k + 1}`} />
+              ))}
+            </div>
+          </>
+        )}
+      </section>
+      <PillarStrip programs={programs} />
+    </>
+  )
+}
+
 function Hero({ slides, programs }) {
   const { site } = useSite()
   const logo = useLogo()
-  const [i, setI] = useState(0)
   const photos = slides.filter((s) => s.image)
 
-  useEffect(() => {
-    if (photos.length < 2) return
-    const t = setInterval(() => setI((x) => (x + 1) % photos.length), 6500)
-    return () => clearInterval(t)
-  }, [photos.length])
+  // Sawirro admin-ku geliyay haddii ay jiraan → slider; haddii kale hero-gii hore
+  if (photos.length > 0) return <HeroSlider photos={photos} programs={programs} />
 
   return (
-    <section className={`hero ${photos.length ? 'has-photo' : ''}`}>
-      {photos.length > 0 ? (
-        <div className="hero-photos" aria-hidden={photos.length > 0}>
-          {photos.map((s, k) => (
-            <img key={s.id} src={s.image} alt={s.caption || ''} className={k === i % photos.length ? 'on' : ''} />
-          ))}
-          <div className="hero-shade" />
-        </div>
-      ) : (
-        <Topo seed={1.3} rings={16} />
-      )}
+    <section className="hero">
+      <Topo seed={1.3} rings={16} />
 
       <div className="container hero-inner">
         <div className="hero-copy">
@@ -44,31 +164,87 @@ function Hero({ slides, programs }) {
             </Link>
           </div>
         </div>
-        {photos.length === 0 && (
-          <div className="hero-mark" aria-hidden="true">
-            <img src={logo} alt="" />
-          </div>
-        )}
+        <div className="hero-mark" aria-hidden="true">
+          <img src={logo} alt="" />
+        </div>
       </div>
 
-      {photos.length > 1 && (
-        <div className="hero-dots" role="tablist" aria-label="Hero images">
-          {photos.map((s, k) => (
-            <button key={s.id} type="button" className={k === i % photos.length ? 'on' : ''} onClick={() => setI(k)} aria-label={`Image ${k + 1}`} />
-          ))}
-        </div>
-      )}
+      <PillarStrip programs={programs} />
+    </section>
+  )
+}
 
-      <div className="hero-pillars">
-        {programs.map((p) => (
-          <Link key={p.id} to={`/programs#${p.slug || p.id}`} className="pillar-tile" style={{ '--tile': colorVar(p.color) }}>
-            <ProgramIcon name={p.icon} />
-            <strong>{p.title}</strong>
-            <span>{p.subtitle}</span>
-          </Link>
+// Tirinta (count-up) marka la gaaro muuqaalka
+function CountUp({ value }) {
+  const ref = useRef(null)
+  const m = String(value).match(/^([^\d-]*)(\d[\d.,]*)(.*)$/)
+  const target = m ? parseFloat(m[2].replace(/,/g, '')) : NaN
+  const [n, setN] = useState(prefersReduced() ? target : 0)
+
+  useEffect(() => {
+    if (!m || Number.isNaN(target) || prefersReduced() || !('IntersectionObserver' in window)) {
+      setN(target)
+      return undefined
+    }
+    let raf = 0
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return
+        io.disconnect()
+        const t0 = performance.now()
+        const tick = (t) => {
+          const k = Math.min(1, (t - t0) / 1900)
+          setN(target * (1 - Math.pow(1 - k, 3)))
+          if (k < 1) raf = requestAnimationFrame(tick)
+        }
+        raf = requestAnimationFrame(tick)
+      },
+      { threshold: 0.35 },
+    )
+    io.observe(ref.current)
+    return () => {
+      io.disconnect()
+      cancelAnimationFrame(raf)
+    }
+  }, [value]) // eslint-disable-line
+
+  if (!m || Number.isNaN(target)) return <span ref={ref}>{value}</span>
+  return (
+    <span ref={ref}>
+      {m[1]}
+      {Math.round(n).toLocaleString('en-US')}
+      {m[3]}
+    </span>
+  )
+}
+
+function StatsBand({ text }) {
+  const list = rows(text).filter((r) => r[0])
+  if (!list.length) return null
+  return (
+    <section className="stats-band" aria-label="RDA in numbers">
+      <div className="container stats-grid">
+        {list.map(([num, label], k) => (
+          <div className="stat" key={k}>
+            <b>
+              <CountUp value={num} />
+            </b>
+            <span>{label}</span>
+          </div>
         ))}
       </div>
     </section>
+  )
+}
+
+const partnerNode = (p, hidden = false) => {
+  const inner = p.logo ? <img src={p.logo} alt={hidden ? '' : p.name} loading="lazy" /> : <span>{p.name}</span>
+  return p.url ? (
+    <a href={/^https?:/.test(p.url) ? p.url : `https://${p.url}`} target="_blank" rel="noreferrer" title={p.name} tabIndex={hidden ? -1 : undefined}>
+      {inner}
+    </a>
+  ) : (
+    <div title={p.name}>{inner}</div>
   )
 }
 
@@ -129,6 +305,8 @@ export default function Home() {
           </dl>
         </div>
       </Section>
+
+      <StatsBand text={site.stats} />
 
       <Section tone="paper">
         <div className="nexus">
@@ -221,19 +399,23 @@ export default function Home() {
       {partners.length > 0 && (
         <Section tone="paper" className="partners-band">
           <h2 className="h-md">Working alongside</h2>
-          <div className="partner-logos">
-            {partners.map((p) =>
-              p.url ? (
-                <a key={p.id} href={/^https?:/.test(p.url) ? p.url : `https://${p.url}`} target="_blank" rel="noreferrer" title={p.name}>
-                  {p.logo ? <img src={p.logo} alt={p.name} loading="lazy" /> : <span>{p.name}</span>}
-                </a>
-              ) : (
-                <div key={p.id} title={p.name}>
-                  {p.logo ? <img src={p.logo} alt={p.name} loading="lazy" /> : <span>{p.name}</span>}
-                </div>
-              ),
-            )}
-          </div>
+          {partners.length >= 4 ? (
+            <div className="marquee" aria-label="Partners">
+              <div className="marquee-track">
+                {[...partners, ...partners].map((p, k) => (
+                  <div className="marquee-item" key={`${p.id}-${k}`} aria-hidden={k >= partners.length ? 'true' : undefined}>
+                    {partnerNode(p, k >= partners.length)}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="partner-logos">
+              {partners.map((p) => (
+                <div key={p.id}>{partnerNode(p)}</div>
+              ))}
+            </div>
+          )}
         </Section>
       )}
 

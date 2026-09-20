@@ -18,6 +18,7 @@ export const SITE_GROUPS = [
       { key: 'heroText', label: 'Qoraalka Hero', type: 'textarea', rows: 3 },
       { key: 'summary', label: 'Soo koobid (Executive Summary)', type: 'textarea', rows: 8, help: 'Baro qoraalka bogga hore. Fal madhan ku kala saar paragraph-yada.' },
       { key: 'glance', label: 'RDA at a Glance', type: 'lines', rows: 6, help: TABLE + ' Tusaale: Headquarters | Mogadishu' },
+      { key: 'stats', label: 'Tirooyinka (count-up) ee bogga hore', type: 'lines', rows: 5, help: 'Sadar kasta = hal tiro, qaabka: Tiro | Magac. Tusaale: 4 | Thematic pillars. Ka tag madhan si aad u qariso.' },
     ],
   },
   {
@@ -140,8 +141,9 @@ export const NEWS_CATEGORIES = ['News', 'Press release', 'Project update', 'Stor
 
 // ---- CRUD collections ----
 export const HERO_FIELDS = [
-  { key: 'image', label: 'Sawirka Hero', type: 'image', folder: 'hero', required: true },
-  { key: 'caption', label: 'Qoraal gaaban (ikhtiyaari)', type: 'text' },
+  { key: 'image', label: 'Sawirka Hero (waa ka soo muuqdaa bogga hore isla markiiba)', type: 'image', folder: 'hero', required: true },
+  { key: 'caption', label: 'Qoraalka sawirka (ka muuqda sawirka gudihiisa; haddii madhan yahay, cinwaanka Hero ayaa la isticmaalayaa)', type: 'text' },
+  { key: 'link', label: 'Link (ikhtiyaari) — marka qoraalka la riixo halka uu tagayo', type: 'text', help: 'Tusaale: /news ama https://…' },
 ]
 
 export const PROGRAM_FIELDS = [

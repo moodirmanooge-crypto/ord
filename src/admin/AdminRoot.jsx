@@ -132,11 +132,11 @@ function Shell() {
               'hero',
               <CrudManager
                 title="Hero Sawirada"
-                hint="Sawirada ka muuqda bogga hore ee website-ka (waxay is beddelayaan). Haddii aan sawir lahayn, naqshad asal ah ayaa muuqata."
+                hint="Sawirada halkan ku shubo waxay toos uga soo muuqdaan bogga hore sida slider (Ken Burns + qoraal animation ah). Qoraalka sawir kasta wuxuu ka muuqdaa sawirka gudihiisa. Haddii aan sawir lahayn, naqshadda asalka ah ayaa muuqata."
                 collectionName={COL.hero}
                 fields={HERO_FIELDS}
                 addLabel="Ku dar sawir Hero"
-                card={(it) => ({ title: it.caption || 'Sawir Hero', image: it.image })}
+                card={(it) => ({ title: it.caption || 'Sawir Hero', meta: it.link || '', image: it.image })}
                 wide={false}
               />,
             )}

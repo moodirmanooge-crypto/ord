@@ -5,6 +5,7 @@ import App from './App'
 import './styles/global.css'
 import './styles/site.css'
 import './styles/motion.css'
+import './styles/wardi.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

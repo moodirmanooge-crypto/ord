@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ChevronDown, Menu, Phone, Mail, X } from 'lucide-react'
+import { ChevronDown, Facebook, Instagram, Linkedin, Menu, Phone, Mail, Twitter, X, Youtube } from 'lucide-react'
 import { useSite, useContent } from '../lib/data'
-import { lines, telHref } from '../lib/text'
+import { ensureUrl, lines, telHref } from '../lib/text'
 import { buildNav, isExternal } from '../lib/menu'
 import { useLogo } from './ui'
 
@@ -34,10 +34,15 @@ export default function Header() {
   const [openSub, setOpenSub] = useState('') // dropdown-ka desktop-ka ee furan
   const closeTimer = useRef(null)
   const phones = lines(site.phones)
+  const socials = [
+    ['facebook', Facebook, 'Facebook'],
+    ['twitter', Twitter, 'X / Twitter'],
+    ['linkedin', Linkedin, 'LinkedIn'],
+    ['instagram', Instagram, 'Instagram'],
+    ['youtube', Youtube, 'YouTube'],
+  ].filter(([k]) => site[k])
 
   const NAV = useMemo(() => buildNav(menu, programs), [menu, programs])
-  // Marka items badan la geliyo, nav-ku wuu isku hagaajiyaa (ku habboon shaashad kasta)
-  const density = NAV.length >= 10 ? 'xmany' : NAV.length >= 8 ? 'many' : ''
 
   const showSub = (id) => {
     clearTimeout(closeTimer.current)
@@ -86,7 +91,7 @@ export default function Header() {
   useEffect(() => () => clearTimeout(closeTimer.current), [])
 
   return (
-    <header className={`site-header ${density} ${scrolled ? 'is-scrolled' : ''} ${open ? 'menu-open' : ''}`}>
+    <header className={`site-header ${scrolled ? 'is-scrolled' : ''} ${open ? 'menu-open' : ''}`}>
       <div className="utility">
         <div className="container utility-inner">
           <p>{site.tagline}</p>
@@ -101,86 +106,124 @@ export default function Header() {
                 <Mail size={14} /> {site.email}
               </a>
             )}
+            {socials.length > 0 && (
+              <span className="utility-social">
+                {socials.map(([k, Icon, label]) => (
+                  <a key={k} href={ensureUrl(site[k])} target="_blank" rel="noreferrer" aria-label={label}>
+                    <Icon size={14} />
+                  </a>
+                ))}
+              </span>
+            )}
           </div>
         </div>
       </div>
 
-      <div className="container nav-bar">
-        <Link to="/" className="brand" aria-label={`${site.orgName} ${site.country} – Home`} onClick={closeAll}>
-          <img src={logo} alt="" width="52" height="52" />
-          <span className="brand-text">
-            <strong>{site.orgName}</strong>
-            <small>{site.country}</small>
-          </span>
-        </Link>
+      <div className="brandbar">
+        <div className="container brandbar-inner">
+          <Link to="/" className="brand" aria-label={`${site.orgName} ${site.country} – Home`} onClick={closeAll}>
+            <img src={logo} alt="" width="52" height="52" />
+            <span className="brand-text">
+              <strong>{site.orgName}</strong>
+              <small>{site.country}</small>
+            </span>
+          </Link>
 
-        <nav className="nav-desktop" aria-label="Main">
-          {NAV.map((item) => {
-            const isDrop = item.children.length > 0
-            if (!isDrop) {
-              return isExternal(item.to) || item.newTab ? (
-                <MenuLink key={item.id} to={item.to} newTab={item.newTab} onClick={closeAll} className="nav-link">
-                  {item.label}
-                </MenuLink>
-              ) : (
-                <NavLink key={item.id} to={item.to} end={item.end} onClick={closeAll} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-                  {item.label}
-                </NavLink>
-              )
-            }
-            return (
-              <div
-                className={`nav-item has-sub ${openSub === item.id ? 'open' : ''}`}
-                key={item.id}
-                onPointerEnter={(e) => e.pointerType === 'mouse' && showSub(item.id)}
-                onPointerLeave={(e) => e.pointerType === 'mouse' && hideSubSoon()}
-                onFocus={(e) => e.target.matches(':focus-visible') && showSub(item.id)}
-                onBlur={(e) => {
-                  if (!e.currentTarget.contains(e.relatedTarget)) setOpenSub('')
-                }}
-                onKeyDown={(e) => e.key === 'Escape' && setOpenSub('')}
-              >
-                {!item.to ? (
-                  <button type="button" className="nav-link" aria-haspopup="true" aria-expanded={openSub === item.id} onClick={() => (openSub === item.id ? setOpenSub('') : showSub(item.id))}>
+          <div className="brandbar-info">
+            {phones[0] && (
+              <a href={telHref(phones[0])} className="info-item">
+                <Phone size={22} />
+                <span>
+                  <small>Call us</small>
+                  <b>{phones[0]}</b>
+                </span>
+              </a>
+            )}
+            {site.email && (
+              <a href={`mailto:${site.email}`} className="info-item">
+                <Mail size={22} />
+                <span>
+                  <small>Email us</small>
+                  <b>{site.email}</b>
+                </span>
+              </a>
+            )}
+            <Link to="/partner" className="btn btn-red nav-cta" onClick={closeAll}>
+              Partner with us
+            </Link>
+          </div>
+
+          <button type="button" className="burger" onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>
+            {open ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
+      </div>
+
+      <div className="navstrip">
+        <div className="container navstrip-inner">
+          <Link to="/" className="strip-logo" aria-label="Home" onClick={closeAll} tabIndex={scrolled ? 0 : -1}>
+            <img src={logo} alt="" width="36" height="36" />
+          </Link>
+          <nav className="nav-desktop" aria-label="Main">
+            {NAV.map((item) => {
+              const isDrop = item.children.length > 0
+              if (!isDrop) {
+                return isExternal(item.to) || item.newTab ? (
+                  <MenuLink key={item.id} to={item.to} newTab={item.newTab} onClick={closeAll} className="nav-link">
                     {item.label}
-                    <ChevronDown size={15} aria-hidden="true" />
-                  </button>
-                ) : isExternal(item.to) || item.newTab ? (
-                  <MenuLink to={item.to} newTab={item.newTab} onClick={(e) => onParentClick(e, item.id)} className="nav-link">
-                    {item.label}
-                    <ChevronDown size={15} aria-hidden="true" />
                   </MenuLink>
                 ) : (
-                  <NavLink
-                    to={item.to}
-                    onClick={(e) => onParentClick(e, item.id)}
-                    aria-haspopup="true"
-                    aria-expanded={openSub === item.id}
-                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                  >
+                  <NavLink key={item.id} to={item.to} end={item.end} onClick={closeAll} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                     {item.label}
-                    <ChevronDown size={15} aria-hidden="true" />
                   </NavLink>
-                )}
-                <div className="sub">
-                  {item.children.map((c) => (
-                    <MenuLink key={c.id} to={c.to} newTab={c.newTab} onClick={closeAll}>
-                      {c.label}
+                )
+              }
+              return (
+                <div
+                  className={`nav-item has-sub ${openSub === item.id ? 'open' : ''}`}
+                  key={item.id}
+                  onPointerEnter={(e) => e.pointerType === 'mouse' && showSub(item.id)}
+                  onPointerLeave={(e) => e.pointerType === 'mouse' && hideSubSoon()}
+                  onFocus={(e) => e.target.matches(':focus-visible') && showSub(item.id)}
+                  onBlur={(e) => {
+                    if (!e.currentTarget.contains(e.relatedTarget)) setOpenSub('')
+                  }}
+                  onKeyDown={(e) => e.key === 'Escape' && setOpenSub('')}
+                >
+                  {!item.to ? (
+                    <button type="button" className="nav-link" aria-haspopup="true" aria-expanded={openSub === item.id} onClick={() => (openSub === item.id ? setOpenSub('') : showSub(item.id))}>
+                      {item.label}
+                      <ChevronDown size={15} aria-hidden="true" />
+                    </button>
+                  ) : isExternal(item.to) || item.newTab ? (
+                    <MenuLink to={item.to} newTab={item.newTab} onClick={(e) => onParentClick(e, item.id)} className="nav-link">
+                      {item.label}
+                      <ChevronDown size={15} aria-hidden="true" />
                     </MenuLink>
-                  ))}
+                  ) : (
+                    <NavLink
+                      to={item.to}
+                      onClick={(e) => onParentClick(e, item.id)}
+                      aria-haspopup="true"
+                      aria-expanded={openSub === item.id}
+                      className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                    >
+                      {item.label}
+                      <ChevronDown size={15} aria-hidden="true" />
+                    </NavLink>
+                  )}
+                  <div className="sub">
+                    {item.children.map((c) => (
+                      <MenuLink key={c.id} to={c.to} newTab={c.newTab} onClick={closeAll}>
+                        {c.label}
+                      </MenuLink>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
-        </nav>
-
-        <Link to="/partner" className="btn btn-red nav-cta" onClick={closeAll}>
-          Partner with us
-        </Link>
-
-        <button type="button" className="burger" onClick={() => setOpen((v) => !v)} aria-expanded={open} aria-label={open ? 'Close menu' : 'Open menu'}>
-          {open ? <X size={26} /> : <Menu size={26} />}
-        </button>
+              )
+            })}
+          </nav>
+        </div>
       </div>
 
       <div className={`mobile-menu ${open ? 'open' : ''}`} aria-hidden={!open}>

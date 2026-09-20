@@ -34,6 +34,13 @@ export const DEFAULT_SITE = {
     'Governance | Board of Directors, Executive Director and eight technical Directorates',
   ].join('\n'),
 
+  stats: [
+    '4 | Thematic pillars',
+    '6 | Areas of operation',
+    '8 | Technical directorates',
+    '5 | Federal Member States',
+  ].join('\n'),
+
   aboutImage: '',
   whoWeAre:
     'Rural Development Aid (RDA) is an independent, Somali-led, non-profit, non-partisan and multidisciplinary humanitarian and development organization committed to advancing sustainable development, resilience-building and the protection of vulnerable populations across Somalia. RDA was founded by a group of experienced, highly educated Somali professionals — practitioners with advanced training in public health, nutrition, education, governance, environmental science, protection and humanitarian coordination — united by the conviction that Somalia’s recovery must be driven by Somali expertise and Somali institutions, working hand-in-hand with the international community.\n\nSince its establishment, RDA has grown into a nationwide organization implementing integrated programs that improve human well-being, strengthen community resilience, promote environmental sustainability and enhance governance systems, applying a Humanitarian–Development–Peace Nexus approach that links emergency response to long-term development outcomes. The organization invests deliberately in local capacity so that the systems it strengthens continue to function long after any single project ends.',
