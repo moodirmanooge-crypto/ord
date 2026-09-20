@@ -37,6 +37,8 @@ const CONTAINERS = [
   '.partner-logos > *',
   '.footer-about',
   '.footer-col',
+  '.sf-brand',
+  '.sf-col',
 ].join(',')
 
 // Element-yada gooni ah (qoraal, sawir, badhan...)
