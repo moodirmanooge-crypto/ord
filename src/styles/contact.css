@@ -1,0 +1,498 @@
+/* ==========================================================
+   RDA Somalia — bogga Contact
+   ========================================================== */
+.ct-page {
+  position: relative;
+  z-index: 2;
+  display: flow-root;
+  padding-bottom: clamp(56px, 8vw, 100px);
+  background: var(--paper);
+}
+
+/* ---------- animation-ka soo muuqashada ---------- */
+.ct-in {
+  opacity: 0;
+}
+.ct-in.on {
+  opacity: 1;
+  animation: ctUp 0.9s var(--ease) var(--d, 0ms) backwards;
+}
+.ct-in.ct-left.on {
+  animation-name: ctLeft;
+}
+.ct-in.ct-right.on {
+  animation-name: ctRight;
+}
+@keyframes ctUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+}
+@keyframes ctLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+}
+@keyframes ctRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+}
+
+/* ---------- 4-ta kaarka ee kore ---------- */
+.ct-quick {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: -38px;
+  margin-bottom: clamp(32px, 5vw, 56px);
+}
+.ct-card {
+  --c: var(--blue);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 22px 22px 24px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 40px rgba(10, 37, 64, 0.1);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s, border-color 0.3s;
+}
+.ct-card.tone-green {
+  --c: var(--green);
+}
+.ct-card.tone-red {
+  --c: var(--red);
+}
+.ct-card.tone-indigo {
+  --c: var(--indigo);
+}
+.ct-card:hover {
+  transform: translateY(-6px);
+  border-color: color-mix(in srgb, var(--c) 45%, var(--line));
+  box-shadow: 0 24px 50px rgba(10, 37, 64, 0.16);
+}
+.ct-ico {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--c) 13%, #fff);
+  color: var(--c);
+  transition: background 0.3s, color 0.3s, transform 0.4s var(--ease);
+}
+.ct-card:hover .ct-ico {
+  background: var(--c);
+  color: #fff;
+  transform: rotate(-8deg) scale(1.06);
+}
+.ct-card-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-weight: 500;
+}
+.ct-card-text small {
+  margin-bottom: 2px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.ct-card-text a {
+  color: var(--ink);
+  text-decoration: none;
+}
+.ct-card-text a:hover {
+  color: var(--c);
+  text-decoration: underline;
+}
+
+/* ---------- foomka + aside ---------- */
+.ct-main {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr);
+  gap: clamp(20px, 3vw, 34px);
+  align-items: stretch;
+}
+.ct-form {
+  display: grid;
+  align-content: start;
+  gap: 20px;
+  padding: clamp(24px, 4vw, 44px);
+  border-radius: 26px;
+  background: #fff;
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 50px rgba(10, 37, 64, 0.08);
+}
+.ct-form-head h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+.ct-form-head p {
+  margin: 8px 0 0;
+  max-width: 52ch;
+  color: var(--ink-3);
+}
+.ct-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* floating-label fields */
+.ct-field {
+  position: relative;
+  display: block;
+}
+.ct-field > svg {
+  position: absolute;
+  left: 16px;
+  top: 28px;
+  transform: translateY(-50%);
+  color: #8ea3a0;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+.ct-field input,
+.ct-field textarea {
+  width: 100%;
+  padding: 26px 16px 9px 47px;
+  border: 1.5px solid #d3dfdb;
+  border-radius: 15px;
+  background: #fbfdfc;
+  font: inherit;
+  color: var(--ink);
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+.ct-field textarea {
+  min-height: 180px;
+  padding-top: 38px;
+  resize: vertical;
+  line-height: 1.55;
+}
+.ct-field input:hover,
+.ct-field textarea:hover {
+  border-color: #b7c8c3;
+}
+.ct-field input:focus,
+.ct-field textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(27, 117, 188, 0.14);
+}
+.ct-field > span {
+  position: absolute;
+  left: 47px;
+  top: 28px;
+  transform: translateY(-50%);
+  color: var(--ink-3);
+  font-weight: 500;
+  pointer-events: none;
+  transition: top 0.2s var(--ease), font-size 0.2s var(--ease), color 0.2s, letter-spacing 0.2s;
+}
+.ct-field input:focus ~ span,
+.ct-field textarea:focus ~ span,
+.ct-field input:not(:placeholder-shown) ~ span,
+.ct-field textarea:not(:placeholder-shown) ~ span {
+  top: 15px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.ct-field:focus-within > svg {
+  color: var(--blue);
+}
+.ct-field input:invalid:not(:placeholder-shown):not(:focus) {
+  border-color: var(--red);
+}
+
+/* topic chips */
+.ct-topics {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.ct-topics legend {
+  margin-bottom: 10px;
+  padding: 0;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+}
+.ct-topics [role='radiogroup'] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ct-topics button {
+  padding: 9px 16px;
+  border: 1.5px solid #d3dfdb;
+  border-radius: 99px;
+  background: #fff;
+  font-size: 0.93rem;
+  font-weight: 600;
+  color: var(--ink-2);
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.25s var(--ease), box-shadow 0.2s;
+}
+.ct-topics button:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+  transform: translateY(-2px);
+}
+.ct-topics button.on {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(27, 117, 188, 0.3);
+  animation: ctPop 0.35s var(--ease);
+}
+@keyframes ctPop {
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+/* submit */
+.ct-send {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 30px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--blue);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  box-shadow: 0 14px 28px rgba(27, 117, 188, 0.32);
+  transition: background 0.2s, transform 0.25s var(--ease), box-shadow 0.25s;
+}
+.ct-send svg {
+  transition: transform 0.3s var(--ease);
+}
+.ct-send:hover:not(:disabled) {
+  background: var(--blue-700);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(27, 117, 188, 0.4);
+}
+.ct-send:hover:not(:disabled) svg {
+  transform: translate(4px, -3px);
+}
+.ct-send:active:not(:disabled) {
+  transform: translateY(0);
+}
+.ct-send:disabled {
+  opacity: 0.75;
+  cursor: progress;
+}
+.ct-spin {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+.ct-error {
+  margin: 0;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #fdecec;
+  color: var(--red-700);
+  font-weight: 600;
+}
+
+/* guul */
+.ct-done {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: clamp(28px, 6vw, 64px) 8px;
+  text-align: center;
+}
+.ct-done svg {
+  margin-bottom: 8px;
+  overflow: visible;
+}
+.ct-done-ring {
+  fill: #e6f4ec;
+  stroke: var(--green);
+  stroke-width: 3;
+  stroke-dasharray: 214;
+  stroke-dashoffset: 214;
+  animation: ctDraw 0.8s var(--ease) forwards;
+}
+.ct-done-check {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: ctDraw 0.6s 0.55s var(--ease) forwards;
+}
+@keyframes ctDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.ct-done h2 {
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+}
+.ct-done p {
+  max-width: 44ch;
+  margin: 0 0 12px;
+  color: var(--ink-2);
+}
+
+/* ---------- aside madow ---------- */
+.ct-aside {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  background: var(--navy-800);
+  color: #fff;
+  box-shadow: 0 20px 50px rgba(10, 37, 64, 0.22);
+}
+.ct-aside .topo-minor {
+  stroke: rgba(255, 255, 255, 0.07);
+}
+.ct-aside .topo-major {
+  stroke: rgba(125, 192, 245, 0.28);
+}
+.ct-aside-in {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  align-content: start;
+  gap: 22px;
+  height: 100%;
+  padding: clamp(26px, 4vw, 42px);
+}
+.ct-aside h2 {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+.ct-aside p {
+  margin: -6px 0 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+.ct-ed {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+.ct-ed-av {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--red);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+}
+.ct-ed > span:last-child {
+  display: grid;
+  line-height: 1.3;
+}
+.ct-ed small {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+.ct-ed strong {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+.ct-mailbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--navy-800);
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  transition: transform 0.25s var(--ease), background 0.2s;
+}
+.ct-mailbtn:hover {
+  background: #e7f1fa;
+  transform: translateY(-3px);
+}
+.ct-socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ct-socials a {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  color: #fff;
+  transition: background 0.2s, border-color 0.2s, transform 0.25s var(--ease);
+}
+.ct-socials a:hover {
+  background: var(--blue);
+  border-color: var(--blue);
+  transform: translateY(-4px);
+}
+
+/* ---------- Tablet & mobile ---------- */
+@media (max-width: 960px) {
+  .ct-main {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 620px) {
+  .ct-quick {
+    grid-template-columns: 1fr;
+    margin-top: -40px;
+  }
+  .ct-row {
+    grid-template-columns: 1fr;
+  }
+  .ct-send {
+    justify-self: stretch;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-in.on,
+  .ct-topics button.on {
+    animation: none;
+  }
+  .ct-done-ring,
+  .ct-done-check {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}

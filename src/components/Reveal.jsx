@@ -57,7 +57,7 @@ const LEAF = [
 ].join(',')
 
 const SPLITS = '.split, .pillar-grid, .intro-grid, .nexus, .contact-grid, .why-grid'
-const EXCLUDE = '.hero, .wslider, .marquee, .stats-band, .banner, .modal-back, .lightbox, .site-header, .mobile-menu, .admin, .login'
+const EXCLUDE = '.hero, .wslider, .marquee, .stats-band, .ct-page, .banner, .modal-back, .lightbox, .site-header, .mobile-menu, .admin, .login'
 
 function kindOf(el) {
   if (el.matches('.about-logo, svg.nexus-svg, .pillar-badge')) return 'pop'
