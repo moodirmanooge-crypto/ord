@@ -6,7 +6,7 @@ import { useSite } from '../lib/data'
 import { useAuth } from './auth'
 import '../styles/lock.css'
 
-// Lock screen-ka admin-ka: link-ga /admin had iyo jeer halkan ayuu ku furmaa
+// Admin lock screen: the /admin link always opens here first
 export default function Login() {
   const { login, lastUser, forgetUser } = useAuth()
   const { site } = useSite()
@@ -54,18 +54,18 @@ export default function Login() {
           <span className="lock-badge" aria-hidden="true">
             <Lock size={26} />
           </span>
-          <h2>Admin waa xiran yahay</h2>
-          <p>{remembered ? 'Geli password-kaaga si aad u furto.' : 'Geli username-kaaga iyo password-kaaga si aad u furto.'}</p>
+          <h2>Admin is locked</h2>
+          <p>{remembered ? 'Enter your password to unlock.' : 'Enter your username and password to unlock.'}</p>
 
           {remembered ? (
             <div className="lock-user">
               <span className="avatar-a">{(u[0] || '?').toUpperCase()}</span>
               <div>
                 <strong>@{u}</strong>
-                <small>Account-ka ugu dambeeyay</small>
+                <small>Last used account</small>
               </div>
               <button type="button" className="lock-switch" onClick={switchUser}>
-                Account kale
+                Use another account
               </button>
             </div>
           ) : (
@@ -79,7 +79,7 @@ export default function Login() {
             <span className="field-label">Password</span>
             <span className="pw-wrap">
               <input type={show ? 'text' : 'password'} value={p} onChange={(e) => setP(e.target.value)} autoComplete="current-password" autoFocus={remembered} />
-              <button type="button" className="icon-btn" onClick={() => setShow((v) => !v)} aria-label="Muuji/qari password">
+              <button type="button" className="icon-btn" onClick={() => setShow((v) => !v)} aria-label="Show/hide password">
                 {show ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </span>
@@ -90,10 +90,10 @@ export default function Login() {
             </p>
           )}
           <button className="btn-primary btn-block" disabled={busy}>
-            <LogIn size={18} /> {busy ? 'Fadlan sug…' : 'Fur'}
+            <LogIn size={18} /> {busy ? 'Please wait…' : 'Unlock'}
           </button>
           <Link to="/" className="login-back">
-            Ku noqo website-ka
+            Back to the website
           </Link>
         </form>
       </main>

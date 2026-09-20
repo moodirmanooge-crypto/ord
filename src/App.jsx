@@ -5,6 +5,7 @@ import { Loading, ScrollManager } from './components/ui'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Reveal from './components/Reveal'
+import PageExtras from './components/PageExtras'
 import Home from './pages/Home'
 import About from './pages/About'
 import Programs from './pages/Programs'
@@ -30,6 +31,7 @@ function SiteLayout() {
       <Header />
       <main id="main">
         <Outlet />
+        <PageExtras />
       </main>
       <Footer />
     </>

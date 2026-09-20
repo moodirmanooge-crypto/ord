@@ -18,7 +18,7 @@ export function ImageField({ value, onChange, folder = 'misc', png = false }) {
       const url = await uploadImage(file, { folder, png, onProgress: setProgress })
       onChange(url)
     } catch (e) {
-      setErr(e.message || 'Sawirka lama soo dejin karo.')
+      setErr(e.message || 'The image could not be uploaded.')
     } finally {
       setBusy(false)
     }
@@ -31,10 +31,10 @@ export function ImageField({ value, onChange, folder = 'misc', png = false }) {
           <img src={value} alt="" />
           <div className="imgfield-actions">
             <button type="button" className="btn-sm" onClick={() => input.current?.click()} disabled={busy}>
-              <UploadCloud size={15} /> Beddel
+              <UploadCloud size={15} /> Replace
             </button>
             <button type="button" className="btn-sm btn-sm-danger" onClick={() => onChange('')} disabled={busy}>
-              <X size={15} /> Ka saar
+              <X size={15} /> Remove
             </button>
           </div>
         </div>
@@ -53,8 +53,8 @@ export function ImageField({ value, onChange, folder = 'misc', png = false }) {
           disabled={busy}
         >
           <ImagePlus size={26} />
-          <span>{busy ? 'Waa la soo dejinayaa…' : 'Riix ama halkan ku jiid sawir'}</span>
-          <small>JPG, PNG, WEBP — si toos ah ayaa loo yareeyaa</small>
+          <span>{busy ? 'Uploading…' : 'Click or drag an image here'}</span>
+          <small>JPG, PNG, WEBP — automatically optimized</small>
         </button>
       )}
       {busy && (
@@ -90,7 +90,7 @@ export function FieldInput({ field, value, onChange }) {
       <label className="switch">
         <input type="checkbox" checked={value !== false && !!value} onChange={(e) => onChange(e.target.checked)} />
         <span className="switch-track" />
-        <span className="switch-text">{value !== false && value ? 'Haa' : 'Maya'}</span>
+        <span className="switch-text">{value !== false && value ? 'Yes' : 'No'}</span>
       </label>
     )
   }
@@ -101,7 +101,7 @@ export function FieldInput({ field, value, onChange }) {
       <div className="repeater">
         {list.map((it, i) => (
           <div className="repeater-item" key={i}>
-            <button type="button" className="icon-btn icon-btn-danger repeater-del" onClick={() => onChange(list.filter((_, idx) => idx !== i))} aria-label="Tirtir">
+            <button type="button" className="icon-btn icon-btn-danger repeater-del" onClick={() => onChange(list.filter((_, idx) => idx !== i))} aria-label="Delete">
               <Trash2 size={16} />
             </button>
             {field.fields.map((sf) => (
@@ -113,7 +113,7 @@ export function FieldInput({ field, value, onChange }) {
           </div>
         ))}
         <button type="button" className="btn-sm" onClick={() => onChange([...list, Object.fromEntries(field.fields.map((f) => [f.key, '']))])}>
-          <Plus size={15} /> {field.addLabel || 'Ku dar'}
+          <Plus size={15} /> {field.addLabel || 'Add'}
         </button>
       </div>
     )

@@ -3,11 +3,11 @@ import { collection, doc, getDocs, onSnapshot, query, where } from 'firebase/fir
 import { db, COL } from '../firebase'
 import { seedAllIfNeeded } from '../lib/seed'
 
-const KEY = 'rda_admin_session' // sessionStorage: marka tab-ka la xidho, admin-ku wuu xirmayaa (lock screen)
-const LAST = 'rda_admin_last_user' // localStorage: magaca la xasuusto si loo buuxiyo lock screen-ka
+const KEY = 'rda_admin_session' // sessionStorage: when the tab is closed, the admin is locked again
+const LAST = 'rda_admin_last_user' // localStorage: remembered username to pre-fill the lock screen
 const SUPER_ROLES = ['admin', 'superadmin', 'super-admin', 'super_admin', 'super admin']
 
-// Session-kii hore ee localStorage lama isticmaalo — link-ga /admin had iyo jeer wuxuu keenaa lock screen-ka
+// The old localStorage session is no longer used — the /admin link always shows the lock screen
 try {
   localStorage.removeItem(KEY)
 } catch {
@@ -53,7 +53,7 @@ export function AuthProvider({ children }) {
   const attempts = useRef({ n: 0, until: 0 })
   const seeded = useRef(false)
 
-  // Username / password / role si toos ah ayaa looga akhriyaa Firestore (Rda-Admin).
+  // Username / password / role are read live from Firestore (Rda-Admin).
   useEffect(() => {
     if (!sessionId) {
       setUser(null)
@@ -91,17 +91,17 @@ export function AuthProvider({ children }) {
     const now = Date.now()
     if (attempts.current.until > now) {
       const s = Math.ceil((attempts.current.until - now) / 1000)
-      throw new Error(`Isku-day badan. Fadlan sug ${s} ilbiriqsi kadibna isku day mar kale.`)
+      throw new Error(`Too many attempts. Please wait ${s} seconds and try again.`)
     }
     const u = String(username || '').trim()
     const p = String(password || '')
-    if (!u || !p) throw new Error('Geli username iyo password.')
+    if (!u || !p) throw new Error('Enter your username and password.')
     let snap
     try {
       snap = await getDocs(query(collection(db, COL.admins), where('username', '==', u)))
     } catch (e) {
       console.error('[RDA] login', e)
-      throw new Error('Lama xiriiri karo database-ka. Hubi internet-ka iyo Firestore rules.')
+      throw new Error('Could not reach the database. Check your internet connection and Firestore rules.')
     }
     const match = snap.docs.find((d) => String(d.data().password ?? '') === p && d.data().active !== false)
     if (!match) {
@@ -109,7 +109,7 @@ export function AuthProvider({ children }) {
       if (attempts.current.n >= 5) {
         attempts.current = { n: 0, until: Date.now() + 30000 }
       }
-      throw new Error('Username ama password waa khaldan yahay.')
+      throw new Error('Incorrect username or password.')
     }
     attempts.current = { n: 0, until: 0 }
     sessionStorage.setItem(KEY, JSON.stringify({ id: match.id }))

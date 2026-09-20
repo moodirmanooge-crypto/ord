@@ -32,10 +32,10 @@ export default function SubAdmins() {
     e.preventDefault()
     const d = edit.data
     const username = d.username.trim()
-    if (username.length < 3) return toast('Username-ku waa inuu ugu yaraan 3 xaraf noqdaa.', 'err')
-    if (!edit.id && d.password.length < 4) return toast('Password-ku waa inuu ugu yaraan 4 xaraf noqdaa.', 'err')
-    if (edit.id && d.password && d.password.length < 4) return toast('Password-ku waa inuu ugu yaraan 4 xaraf noqdaa.', 'err')
-    if (items.some((a) => a.id !== edit.id && String(a.username).toLowerCase() === username.toLowerCase())) return toast('Username-kan horay ayaa loo isticmaalay.', 'err')
+    if (username.length < 3) return toast('The username must be at least 3 characters.', 'err')
+    if (!edit.id && d.password.length < 4) return toast('The password must be at least 4 characters.', 'err')
+    if (edit.id && d.password && d.password.length < 4) return toast('The password must be at least 4 characters.', 'err')
+    if (items.some((a) => a.id !== edit.id && String(a.username).toLowerCase() === username.toLowerCase())) return toast('This username is already in use.', 'err')
     setSaving(true)
     try {
       const payload = { name: d.name.trim(), username, active: d.active, permissions: d.permissions, updatedAt: serverTimestamp() }
@@ -45,24 +45,24 @@ export default function SubAdmins() {
       } else {
         await addDoc(collection(db, COL.admins), { ...payload, role: 'subadmin', createdAt: serverTimestamp() })
       }
-      toast(edit.id ? 'Waa la kaydiyay' : 'Sub admin cusub waa la sameeyay')
+      toast(edit.id ? 'Saved' : 'New sub admin created')
       setEdit(null)
     } catch (err) {
       console.error(err)
-      toast('Lama kaydin karo. Hubi Firestore rules.', 'err')
+      toast('Could not save. Check your Firestore rules.', 'err')
     } finally {
       setSaving(false)
     }
   }
 
   async function remove(a) {
-    if (!window.confirm(`Ma hubtaa inaad tirtirto ${a.username}? Isla markiiba ayuu ka baxayaa.`)) return
+    if (!window.confirm(`Are you sure you want to delete ${a.username}? They will be signed out immediately.`)) return
     try {
       await deleteDoc(doc(db, COL.admins, a.id))
-      toast('Waa la tirtiray')
+      toast('Deleted')
     } catch (err) {
       console.error(err)
-      toast('Lama tirtiri karo.', 'err')
+      toast('Could not delete.', 'err')
     }
   }
 
@@ -71,10 +71,10 @@ export default function SubAdmins() {
       <div className="page-head">
         <div>
           <h1>Sub Admins</h1>
-          <p className="page-hint">Samee maamulayaal kale oo aad u xaddidi karto qaybaha ay maamuli karaan.</p>
+          <p className="page-hint">Create other administrators and limit which sections they can manage.</p>
         </div>
         <button type="button" className="btn-primary" onClick={openNew}>
-          <Plus size={18} /> Sub admin cusub
+          <Plus size={18} /> New sub admin
         </button>
       </div>
 
@@ -96,18 +96,18 @@ export default function SubAdmins() {
                 <p>@{a.username}</p>
                 {!isSuperDoc(a) && (
                   <>
-                    <p className="perm-line">{(a.permissions || []).length ? (a.permissions || []).map((k) => MODULES.find((m) => m.key === k)?.label || k).join(', ') : 'Wax qayb ah lama siin'}</p>
-                    {a.active === false && <span className="badge badge-off">La joojiyay</span>}
+                    <p className="perm-line">{(a.permissions || []).length ? (a.permissions || []).map((k) => MODULES.find((m) => m.key === k)?.label || k).join(', ') : 'No sections assigned'}</p>
+                    {a.active === false && <span className="badge badge-off">Disabled</span>}
                   </>
                 )}
               </div>
               {!isSuperDoc(a) && (
                 <div className="acard-actions">
                   <button type="button" className="btn-sm" onClick={() => openEdit(a)}>
-                    <Pencil size={15} /> Beddel
+                    <Pencil size={15} /> Edit
                   </button>
                   <button type="button" className="btn-sm btn-sm-danger" onClick={() => remove(a)}>
-                    <Trash2 size={15} /> Tirtir
+                    <Trash2 size={15} /> Delete
                   </button>
                 </div>
               )}
@@ -120,14 +120,14 @@ export default function SubAdmins() {
         open={!!edit}
         onClose={() => !saving && setEdit(null)}
         wide
-        title={edit?.id ? 'Wax ka beddel Sub Admin' : 'Sub admin cusub'}
+        title={edit?.id ? 'Edit sub admin' : 'New sub admin'}
         footer={
           <>
             <button type="button" className="btn-secondary" onClick={() => setEdit(null)} disabled={saving}>
-              Jooji
+              Cancel
             </button>
             <button type="submit" form="sub-form" className="btn-primary" disabled={saving}>
-              {saving ? 'Waa la kaydinayaa…' : 'Kaydi'}
+              {saving ? 'Saving…' : 'Save'}
             </button>
           </>
         }
@@ -135,7 +135,7 @@ export default function SubAdmins() {
         {edit && (
           <form id="sub-form" className="form-grid" onSubmit={save}>
             <label className="field">
-              <span className="field-label">Magaca oo buuxa</span>
+              <span className="field-label">Full name</span>
               <input value={edit.data.name} onChange={(e) => set('name', e.target.value)} />
             </label>
             <div className="form-2">
@@ -144,10 +144,10 @@ export default function SubAdmins() {
                 <input value={edit.data.username} onChange={(e) => set('username', e.target.value)} autoComplete="off" />
               </label>
               <label className="field">
-                <span className="field-label">{edit.id ? 'Password cusub (ka tag madhan haddii aadan beddelayn)' : 'Password *'}</span>
+                <span className="field-label">{edit.id ? 'New password (leave empty to keep the current one)' : 'Password *'}</span>
                 <span className="pw-wrap">
                   <input type={showPw ? 'text' : 'password'} value={edit.data.password} onChange={(e) => set('password', e.target.value)} autoComplete="new-password" />
-                  <button type="button" className="icon-btn" onClick={() => setShowPw((v) => !v)} aria-label="Muuji/qari password">
+                  <button type="button" className="icon-btn" onClick={() => setShowPw((v) => !v)} aria-label="Show/hide password">
                     {showPw ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </span>
@@ -156,10 +156,10 @@ export default function SubAdmins() {
             <label className="switch">
               <input type="checkbox" checked={edit.data.active} onChange={(e) => set('active', e.target.checked)} />
               <span className="switch-track" />
-              <span className="switch-text">{edit.data.active ? 'Account-ku waa furan yahay' : 'Account-ku waa xiran yahay'}</span>
+              <span className="switch-text">{edit.data.active ? 'Account is active' : 'Account is disabled'}</span>
             </label>
             <fieldset className="perm-box">
-              <legend>Qaybaha uu maamuli karo</legend>
+              <legend>Sections they can manage</legend>
               <div className="perm-grid">
                 {GRANTABLE.map((m) => (
                   <label key={m.key} className="check">

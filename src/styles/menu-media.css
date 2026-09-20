@@ -1,0 +1,174 @@
+/* ==========================================================
+   Admin — Navbar & Dropdowns: "Photos & videos" panel
+   ========================================================== */
+.mm-ic.accent {
+  background: color-mix(in srgb, var(--blue) 12%, #fff);
+  color: var(--blue-700);
+}
+.mm-ic.accent:hover:not(:disabled) {
+  background: var(--blue);
+  color: #fff;
+}
+
+.mp {
+  display: grid;
+  gap: 16px;
+}
+.mp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.mp-bar .btn-secondary {
+  padding: 10px 16px;
+}
+.mp-link {
+  display: flex;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  background: #eef6fc;
+  animation: mpIn 0.25s var(--ease) both;
+}
+.mp-link input {
+  flex: 1;
+  min-width: 0;
+}
+@keyframes mpIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+/* uploads in progress */
+.mp-jobs {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mp-jobs li {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+.mp-jobs li > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mp-empty {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 34px 16px;
+  border: 2px dashed #b9cac4;
+  border-radius: 16px;
+  background: #f8fbfa;
+  color: var(--ink-3);
+  text-align: center;
+}
+.mp-empty p {
+  margin: 0;
+}
+
+/* thumbnails */
+.mp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mp-tile {
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  border: 1.5px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  animation: mpIn 0.3s var(--ease) both;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.mp-tile:hover {
+  border-color: #b7c8c3;
+  box-shadow: 0 8px 20px rgba(18, 32, 51, 0.08);
+}
+.mp-thumb {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 11px;
+  background: #0a2540;
+}
+.mp-thumb img,
+.mp-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.mp-vph {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.75);
+}
+.mp-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 10px;
+  border-radius: 99px;
+  background: rgba(5, 22, 41, 0.72);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.mp-badge.video {
+  background: var(--red);
+}
+.mp-cap {
+  width: 100%;
+  padding: 9px 11px !important;
+  font-size: 0.9rem;
+}
+.mp-tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+.mp-tools .mm-ic {
+  width: 32px;
+  height: 32px;
+}
+
+@media (max-width: 560px) {
+  .mp-bar .btn-secondary {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+  .mp-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .mp-link {
+    flex-direction: column;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mp-link,
+  .mp-tile {
+    animation: none;
+  }
+}

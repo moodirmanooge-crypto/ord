@@ -19,10 +19,10 @@ const blank = (fields) =>
   )
 
 /**
- * Maamule guud: liis + ku dar + wax ka beddel + tirtir.
+ * Generic manager: list + add + edit + delete.
  * card(item) => { title, meta, image }
  */
-export default function CrudManager({ title, hint, collectionName, fields, card, addLabel = 'Ku dar cusub', orderable = true, slugFrom, wide = true }) {
+export default function CrudManager({ title, hint, collectionName, fields, card, addLabel = 'Add new', orderable = true, slugFrom, wide = true }) {
   const toast = useToast()
   const { items, loading, error } = useRawCollection(collectionName)
   const [editing, setEditing] = useState(null) // null | {id?, data}
@@ -45,7 +45,7 @@ export default function CrudManager({ title, hint, collectionName, fields, card,
   async function save(e) {
     e.preventDefault()
     const missing = fields.find((f) => f.required && !String(editing.data[f.key] ?? '').trim())
-    if (missing) return toast(`Buuxi: ${missing.label}`, 'err')
+    if (missing) return toast(`Please fill in: ${missing.label}`, 'err')
     setSaving(true)
     try {
       const payload = { ...editing.data }
@@ -55,38 +55,38 @@ export default function CrudManager({ title, hint, collectionName, fields, card,
       if (orderable) payload.order = Number(payload.order) || nextOrder
       if (editing.id) {
         await updateDoc(doc(db, collectionName, editing.id), { ...payload, updatedAt: serverTimestamp() })
-        toast('Waa la kaydiyay')
+        toast('Saved')
       } else {
         await addDoc(collection(db, collectionName), { ...payload, createdAt: serverTimestamp() })
-        toast('Waa lagu daray')
+        toast('Added')
       }
       setEditing(null)
     } catch (err) {
       console.error(err)
-      toast('Lama kaydin karo. Hubi Firestore rules ama internet-ka.', 'err')
+      toast('Could not save. Check your Firestore rules or internet connection.', 'err')
     } finally {
       setSaving(false)
     }
   }
 
   async function remove(item) {
-    if (!window.confirm('Ma hubtaa inaad tirtirto? Tallaabadan dib looma soo celin karo.')) return
+    if (!window.confirm('Are you sure you want to delete this? This cannot be undone.')) return
     try {
       await deleteDoc(doc(db, collectionName, item.id))
-      toast('Waa la tirtiray')
+      toast('Deleted')
     } catch (err) {
       console.error(err)
-      toast('Lama tirtiri karo.', 'err')
+      toast('Could not delete.', 'err')
     }
   }
 
   async function seed() {
     try {
       await seedCollection(collectionName)
-      toast('Xogta asalka ah waa la geliyay — hadda wax ka beddeli kartaa.')
+      toast('Default content added — you can now edit it.')
     } catch (err) {
       console.error(err)
-      toast('Lama geli karo xogta asalka ah.', 'err')
+      toast('Could not add the default content.', 'err')
     }
   }
 
@@ -102,15 +102,15 @@ export default function CrudManager({ title, hint, collectionName, fields, card,
         </button>
       </div>
 
-      {error && <p className="notice notice-err">Xogta lama akhriyi karo (Firestore permission). Hubi rules-ka.</p>}
+      {error && <p className="notice notice-err">Data could not be read (Firestore permission). Check your rules.</p>}
       {loading ? (
         <Loading />
       ) : items.length === 0 ? (
         <div className="empty-admin">
-          <p>Weli wax lama gelin.</p>
+          <p>Nothing added yet.</p>
           {canSeed && (
             <button type="button" className="btn-secondary" onClick={seed}>
-              <DatabaseZap size={17} /> Geli xogta asalka ah ee website-ka (waa laga soo qaaday profile-ka)
+              <DatabaseZap size={17} /> Add the website's default content (taken from the organizational profile)
             </button>
           )}
         </div>
@@ -122,16 +122,16 @@ export default function CrudManager({ title, hint, collectionName, fields, card,
               <article className="acard" key={it.id}>
                 {c.image !== undefined && (c.image ? <img className="acard-img" src={c.image} alt="" loading="lazy" /> : <div className="acard-img acard-ph" />)}
                 <div className="acard-body">
-                  <h3>{c.title || '(cinwaan la\'aan)'}</h3>
+                  <h3>{c.title || '(untitled)'}</h3>
                   {c.meta && <p>{c.meta}</p>}
                   {c.badge && <span className="badge">{c.badge}</span>}
                 </div>
                 <div className="acard-actions">
                   <button type="button" className="btn-sm" onClick={() => open(it)}>
-                    <Pencil size={15} /> Beddel
+                    <Pencil size={15} /> Edit
                   </button>
                   <button type="button" className="btn-sm btn-sm-danger" onClick={() => remove(it)}>
-                    <Trash2 size={15} /> Tirtir
+                    <Trash2 size={15} /> Delete
                   </button>
                 </div>
               </article>
@@ -144,14 +144,14 @@ export default function CrudManager({ title, hint, collectionName, fields, card,
         open={!!editing}
         onClose={() => !saving && setEditing(null)}
         wide={wide}
-        title={editing?.id ? 'Wax ka beddel' : addLabel}
+        title={editing?.id ? 'Edit' : addLabel}
         footer={
           <>
             <button type="button" className="btn-secondary" onClick={() => setEditing(null)} disabled={saving}>
-              Jooji
+              Cancel
             </button>
             <button type="submit" form="crud-form" className="btn-primary" disabled={saving}>
-              {saving ? 'Waa la kaydinayaa…' : 'Kaydi'}
+              {saving ? 'Saving…' : 'Save'}
             </button>
           </>
         }
@@ -163,7 +163,7 @@ export default function CrudManager({ title, hint, collectionName, fields, card,
             ))}
             {orderable && (
               <label className="field field-narrow">
-                <span className="field-label">Kala horeynta (1 = kan ugu horreeya)</span>
+                <span className="field-label">Order (1 = first)</span>
                 <input type="number" min="1" value={editing.data.order ?? (editing.id ? '' : nextOrder)} onChange={(e) => setVal('order')(e.target.value)} />
               </label>
             )}

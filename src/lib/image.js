@@ -38,7 +38,7 @@ async function compress(file, { max, quality, png }) {
   }
   ctx.drawImage(bmp, 0, 0, w, h)
   return new Promise((resolve, reject) =>
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Sawirka lama shaqayn karo.'))), png ? 'image/png' : 'image/jpeg', quality),
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('The image could not be processed.'))), png ? 'image/png' : 'image/jpeg', quality),
   )
 }
 
@@ -51,12 +51,12 @@ const blobToDataURL = (blob) =>
   })
 
 /**
- * Sawir kor u qaad: marka hore waa la yaraysaa (compress), kadibna Firebase Storage.
- * Haddii Storage rules ama shabakaddu diidaan, waxaa loo beddelaa data-URL yar oo Firestore lagu kaydiyo.
+ * Upload an image: it is first compressed in the browser, then sent to Firebase Storage.
+ * If Storage rules or the network refuse it, a small data-URL stored in Firestore is used instead.
  */
 export async function uploadImage(file, { folder = 'misc', png = false, onProgress } = {}) {
-  if (!file || !file.type.startsWith('image/')) throw new Error('Fadlan dooro sawir (JPG, PNG ama WEBP).')
-  if (file.size > 25 * 1024 * 1024) throw new Error('Sawirku aad buu u weyn yahay (ugu badnaan 25MB).')
+  if (!file || !file.type.startsWith('image/')) throw new Error('Please choose an image (JPG, PNG or WEBP).')
+  if (file.size > 25 * 1024 * 1024) throw new Error('The image is too large (maximum 25MB).')
   const usePng = png && file.type !== 'image/jpeg'
   const blob = await compress(file, { max: usePng ? 900 : 1800, quality: 0.82, png: usePng })
   const path = `rda/${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${usePng ? 'png' : 'jpg'}`
@@ -84,6 +84,32 @@ export async function uploadImage(file, { folder = 'misc', png = false, onProgre
         return data
       }
     }
-    throw new Error('Sawirka lama kaydin karo. Hubi Firebase Storage rules ama isticmaal sawir ka yar.')
+    throw new Error('The image could not be saved. Check your Firebase Storage rules or use a smaller image.')
+  }
+}
+
+/**
+ * Upload a video file to Firebase Storage (no compression, no fallback).
+ * Storage rules must allow video uploads under rda/videos (see storage.rules).
+ */
+export async function uploadVideo(file, { onProgress } = {}) {
+  if (!file || !file.type.startsWith('video/')) throw new Error('Please choose a video file (MP4, WebM or MOV).')
+  if (file.size > 200 * 1024 * 1024) throw new Error('The video is too large (maximum 200MB). Upload it to YouTube and paste the link instead.')
+  const ext = (file.name.split('.').pop() || 'mp4').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'mp4'
+  const path = `rda/videos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+  try {
+    const task = uploadBytesResumable(ref(storage, path), file, { contentType: file.type })
+    await new Promise((resolve, reject) => {
+      task.on(
+        'state_changed',
+        (s) => onProgress && onProgress(Math.round((s.bytesTransferred / s.totalBytes) * 100)),
+        reject,
+        resolve,
+      )
+    })
+    return await getDownloadURL(task.snapshot.ref)
+  } catch (e) {
+    console.error('[RDA] video upload failed', e)
+    throw new Error('The video could not be uploaded. Make sure your Firebase Storage rules allow videos (see storage.rules), or paste a YouTube link instead.')
   }
 }

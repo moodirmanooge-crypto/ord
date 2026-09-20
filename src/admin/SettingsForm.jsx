@@ -5,7 +5,7 @@ import { saveSite } from '../lib/seed'
 import { Field } from './fields'
 import { useToast } from './toast'
 
-// Foom badan oo kaydiya doc-ga rda_settings/site
+// Multi-group form that saves the rda_settings/site doc
 export default function SettingsForm({ title, hint, groups }) {
   const { site, loaded } = useSite()
   const toast = useToast()
@@ -19,7 +19,7 @@ export default function SettingsForm({ title, hint, groups }) {
     setValues(Object.fromEntries(keys.map((k) => [k, site[k] ?? ''])))
   }, [loaded, site, values]) // eslint-disable-line
 
-  if (!values) return <div className="page"><p>Waa la soo raryayaa…</p></div>
+  if (!values) return <div className="page"><p>Loading…</p></div>
   const group = groups.find((g) => g.id === active) || groups[0]
 
   async function save(e) {
@@ -27,10 +27,10 @@ export default function SettingsForm({ title, hint, groups }) {
     setSaving(true)
     try {
       await saveSite(values)
-      toast('Waa la kaydiyay — website-ka hadda ayaa isbeddelay')
+      toast('Saved — the website is updated')
     } catch (err) {
       console.error(err)
-      toast('Lama kaydin karo. Hubi Firestore rules ama internet-ka.', 'err')
+      toast('Could not save. Check your Firestore rules or internet connection.', 'err')
     } finally {
       setSaving(false)
     }
@@ -44,7 +44,7 @@ export default function SettingsForm({ title, hint, groups }) {
           {hint && <p className="page-hint">{hint}</p>}
         </div>
         <button className="btn-primary" disabled={saving}>
-          <Save size={18} /> {saving ? 'Waa la kaydinayaa…' : 'Kaydi isbeddellada'}
+          <Save size={18} /> {saving ? 'Saving…' : 'Save changes'}
         </button>
       </div>
 

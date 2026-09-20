@@ -80,7 +80,7 @@ function Shell() {
             <strong>RDA Admin</strong>
             <small>Somalia</small>
           </div>
-          <button type="button" className="icon-btn side-close" onClick={() => setOpen(false)} aria-label="Xir">
+          <button type="button" className="icon-btn side-close" onClick={() => setOpen(false)} aria-label="Close">
             <X size={20} />
           </button>
         </div>
@@ -99,11 +99,11 @@ function Shell() {
         <div className="sidebar-foot">
           <a href="/" target="_blank" rel="noreferrer" className="side-link">
             <ExternalLink size={19} />
-            <span>Fur website-ka</span>
+            <span>Open website</span>
           </a>
           <button type="button" className="side-link" onClick={logout}>
             <LogOut size={19} />
-            <span>Ka bax</span>
+            <span>Log out</span>
           </button>
         </div>
       </aside>
@@ -131,31 +131,31 @@ function Shell() {
             element={guard(
               'hero',
               <CrudManager
-                title="Hero Sawirada"
-                hint="Sawirada halkan ku shubo waxay toos uga soo muuqdaan bogga hore sida slider (Ken Burns + qoraal animation ah). Qoraalka sawir kasta wuxuu ka muuqdaa sawirka gudihiisa. Haddii aan sawir lahayn, naqshadda asalka ah ayaa muuqata."
+                title="Hero Images"
+                hint="Images you upload here appear on the home page right away as a slider (slow zoom + animated caption). Each image's caption is shown inside the image. If there are no images, the default design is shown."
                 collectionName={COL.hero}
                 fields={HERO_FIELDS}
-                addLabel="Ku dar sawir Hero"
-                card={(it) => ({ title: it.caption || 'Sawir Hero', meta: it.link || '', image: it.image })}
+                addLabel="Add hero image"
+                card={(it) => ({ title: it.caption || 'Hero image', meta: it.link || '', image: it.image })}
                 wide={false}
               />,
             )}
           />
-          <Route path="site" element={guard('site', <SettingsForm title="Macluumaadka Website" hint="Magaca, logo, xiriirka, bulshada iyo qoraallada About." groups={SITE_GROUPS} />)} />
-          <Route path="content" element={guard('content', <SettingsForm title="Qoraallada Bogagga" hint="Qoraallada bogagga Programs, Leadership, Impact iyo Partner." groups={CONTENT_GROUPS} />)} />
+          <Route path="site" element={guard('site', <SettingsForm title="Website Info" hint="Name, logo, contact details, social links and About texts." groups={SITE_GROUPS} />)} />
+          <Route path="content" element={guard('content', <SettingsForm title="Page Content" hint="Texts of the Programs, Leadership, Impact and Partner pages." groups={CONTENT_GROUPS} />)} />
           <Route path="menu" element={guard('menu', <MenuManager />)} />
           <Route
             path="programs"
             element={guard(
               'programs',
               <CrudManager
-                title="Barnaamijyada"
-                hint="Afarta tiir ee shaqada RDA. Wax ku dar, ka beddel ama ka saar."
+                title="Programs"
+                hint="RDA's program pillars. Add, edit or remove them."
                 collectionName={COL.programs}
                 fields={PROGRAM_FIELDS}
                 slugFrom="title"
-                addLabel="Barnaamij cusub"
-                card={(it) => ({ title: it.title, meta: it.subtitle, image: it.image, badge: `${(it.sectors || []).length} qayb` })}
+                addLabel="New program"
+                card={(it) => ({ title: it.title, meta: it.subtitle, image: it.image, badge: `${(it.sectors || []).length} sub-sectors` })}
               />,
             )}
           />
@@ -164,11 +164,11 @@ function Shell() {
             element={guard(
               'regions',
               <CrudManager
-                title="Goobaha Shaqada"
-                hint="Gobolada iyo dawladaha RDA ka shaqeyso."
+                title="Where We Work"
+                hint="The regions and states where RDA works."
                 collectionName={COL.regions}
                 fields={REGION_FIELDS}
-                addLabel="Goob cusub"
+                addLabel="New location"
                 card={(it) => ({ title: it.name, meta: it.kind, image: it.image })}
               />,
             )}
@@ -178,11 +178,11 @@ function Shell() {
             element={guard(
               'team',
               <CrudManager
-                title="Hoggaanka & Board-ka"
-                hint="Maamulka sare iyo xubnaha Board of Directors, oo leh sawir iyo bio."
+                title="Leadership & Board"
+                hint="Senior management and Board of Directors members, with photo and bio."
                 collectionName={COL.team}
                 fields={TEAM_FIELDS}
-                addLabel="Xubin cusub"
+                addLabel="New member"
                 card={(it) => ({ title: it.name, meta: it.position, image: it.photo || '', badge: it.group === 'board' ? 'Board' : 'Leadership' })}
               />,
             )}
@@ -192,13 +192,13 @@ function Shell() {
             element={guard(
               'news',
               <CrudManager
-                title="Wararka"
-                hint="Daabac war, ogeysiis ama sheeko cusub oo leh sawir."
+                title="News"
+                hint="Publish news, announcements or new stories with an image."
                 collectionName={COL.news}
                 fields={NEWS_FIELDS}
                 orderable={false}
-                addLabel="War cusub"
-                card={(it) => ({ title: it.title, meta: `${it.category || ''} ${it.date ? '· ' + it.date : ''}`.trim(), image: it.image || '', badge: it.published === false ? 'Qabyo' : 'La daabacay' })}
+                addLabel="New story"
+                card={(it) => ({ title: it.title, meta: `${it.category || ''} ${it.date ? '· ' + it.date : ''}`.trim(), image: it.image || '', badge: it.published === false ? 'Draft' : 'Published' })}
               />,
             )}
           />
@@ -208,11 +208,11 @@ function Shell() {
             element={guard(
               'partners',
               <CrudManager
-                title="Iskaashatada"
-                hint="Logo-yada ururrada, wakaaladaha iyo deeq-bixiyeyaasha lala shaqeeyo."
+                title="Partners"
+                hint="Logos of the organizations, agencies and donors you work with."
                 collectionName={COL.partners}
                 fields={PARTNER_FIELDS}
-                addLabel="Iskaashade cusub"
+                addLabel="New partner"
                 card={(it) => ({ title: it.name, meta: it.url, image: it.logo || '' })}
                 wide={false}
               />,
@@ -230,7 +230,7 @@ function Shell() {
 
 function Gate() {
   const { user, ready } = useAuth()
-  if (!ready) return <Loading label="Waa la soo raryayaa…" />
+  if (!ready) return <Loading label="Loading…" />
   return user ? <Shell /> : <Login />
 }
 

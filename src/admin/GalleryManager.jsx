@@ -16,7 +16,7 @@ function GalleryItem({ item, onDelete }) {
       await updateDoc(doc(db, COL.gallery, item.id), { ...patch, updatedAt: serverTimestamp() })
     } catch (e) {
       console.error(e)
-      toast('Lama kaydin karo.', 'err')
+      toast('Could not save.', 'err')
     }
   }
   return (
@@ -24,17 +24,17 @@ function GalleryItem({ item, onDelete }) {
       <img className="acard-img" src={item.image} alt="" loading="lazy" />
       <div className="acard-body form-grid">
         <label className="field">
-          <span className="field-label">Qoraal sawirka (caption)</span>
+          <span className="field-label">Caption</span>
           <input value={caption} onChange={(e) => setCaption(e.target.value)} onBlur={() => caption !== (item.caption || '') && save({ caption })} />
         </label>
         <label className="field">
-          <span className="field-label">Qaybta (tusaale: WASH, Health)</span>
+          <span className="field-label">Category (example: WASH, Health)</span>
           <input value={category} onChange={(e) => setCategory(e.target.value)} onBlur={() => category !== (item.category || '') && save({ category })} />
         </label>
       </div>
       <div className="acard-actions">
         <button type="button" className="btn-sm btn-sm-danger" onClick={() => onDelete(item)}>
-          <Trash2 size={15} /> Tirtir
+          <Trash2 size={15} /> Delete
         </button>
       </div>
     </article>
@@ -67,17 +67,17 @@ export default function GalleryManager() {
       setBusy({ done, total: list.length })
     }
     setBusy(null)
-    toast(fail ? `${list.length - fail} sawir ayaa la geliyay, ${fail} way fashilmeen.` : `${list.length} sawir ayaa la geliyay`, fail ? 'err' : 'ok')
+    toast(fail ? `${list.length - fail} image(s) added, ${fail} failed.` : `${list.length} image(s) added`, fail ? 'err' : 'ok')
   }
 
   async function remove(item) {
-    if (!window.confirm('Ma hubtaa inaad tirtirto sawirkan?')) return
+    if (!window.confirm('Are you sure you want to delete this image?')) return
     try {
       await deleteDoc(doc(db, COL.gallery, item.id))
-      toast('Waa la tirtiray')
+      toast('Deleted')
     } catch (e) {
       console.error(e)
-      toast('Lama tirtiri karo.', 'err')
+      toast('Could not delete.', 'err')
     }
   }
 
@@ -86,10 +86,10 @@ export default function GalleryManager() {
       <div className="page-head">
         <div>
           <h1>Gallery</h1>
-          <p className="page-hint">Halkan ku shub sawirro badan hal mar. Qoraalka iyo qaybta ku qor sawir kasta hoostiisa.</p>
+          <p className="page-hint">Upload many images at once. Write the caption and category under each image.</p>
         </div>
         <button type="button" className="btn-primary" onClick={() => input.current?.click()} disabled={!!busy}>
-          <ImagePlus size={18} /> {busy ? `${busy.done}/${busy.total} waa la soo dejinayaa…` : 'Ku dar sawirro'}
+          <ImagePlus size={18} /> {busy ? `Uploading ${busy.done}/${busy.total}…` : 'Add images'}
         </button>
         <input ref={input} type="file" accept="image/*" multiple hidden onChange={(e) => (upload(e.target.files), (e.target.value = ''))} />
       </div>
@@ -97,7 +97,7 @@ export default function GalleryManager() {
         <Loading />
       ) : items.length === 0 ? (
         <div className="empty-admin">
-          <p>Weli sawir lama gelin.</p>
+          <p>No images yet.</p>
         </div>
       ) : (
         <div className="cards">
