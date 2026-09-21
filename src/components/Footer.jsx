@@ -128,12 +128,12 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="container sf-base">
-        <p>
-          © {new Date().getFullYear()} {site.orgName} – {site.country}. All rights reserved.
-        </p>
-        <div className="sf-base-right">
-          <Link to="/admin">Admin</Link>
+      {/* Green bottom band (the Admin link was removed; the panel is still reachable at /admin) */}
+      <div className="sf-bottom">
+        <div className="container sf-base">
+          <p>
+            © {new Date().getFullYear()} {site.orgName} – {site.country}. All rights reserved.
+          </p>
           <button type="button" className="sf-top" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} aria-label="Back to top">
             <ChevronUp size={20} />
           </button>
