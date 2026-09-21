@@ -620,7 +620,7 @@ function NavPreview({ nav }) {
         <i />
         <i />
         <i />
-        <span>{site.website || 'www.rda-somalia.org'}</span>
+        <span>{site.website || 'Rdaafrica.org'}</span>
       </div>
       <div className="mm-nav">
         <div className="mm-brand">
