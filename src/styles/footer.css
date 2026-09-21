@@ -89,6 +89,7 @@
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.66);
   -webkit-line-clamp: 4;
+  line-clamp: 4;
   -webkit-box-orient: vertical;
 }
 .sf-actions {
