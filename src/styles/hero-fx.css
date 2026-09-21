@@ -1,0 +1,81 @@
+/* ==========================================================
+   Hero slider — transition effects (fade | slide | zoom) + progress bar
+   (rules use more classes than wardi.css so they win regardless of load order)
+   ========================================================== */
+
+/* ---- SLIDE: images push each other horizontally ---- */
+.wslider.fx-slide .wslide {
+  opacity: 1;
+  visibility: hidden;
+  transform: translateX(100%);
+  transition: none;
+}
+.wslider.fx-slide .wslide.on {
+  visibility: visible;
+  transform: none;
+  transition: transform 0.95s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.wslider.fx-slide .wslide.prev {
+  visibility: visible;
+  transform: translateX(-100%);
+  transition: transform 0.95s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.wslider.fx-slide.rev .wslide {
+  transform: translateX(-100%);
+}
+.wslider.fx-slide.rev .wslide.on {
+  transform: none;
+}
+.wslider.fx-slide.rev .wslide.prev {
+  transform: translateX(100%);
+}
+
+/* ---- ZOOM: each image starts big and settles while fading in ---- */
+.wslider.fx-zoom .wslide img {
+  transform: scale(1);
+}
+.wslider.fx-zoom .wslide.on img {
+  animation: wZoomOut 9s cubic-bezier(0.2, 0.6, 0.3, 1) both;
+}
+@keyframes wZoomOut {
+  from {
+    transform: scale(1.32);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* ---- Time bar: shows when the next image comes ---- */
+.wprog {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.9);
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation-name: wProg;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+.wprog.paused {
+  animation-play-state: paused;
+}
+@keyframes wProg {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wslider.fx-slide .wslide.on,
+  .wslider.fx-slide .wslide.prev {
+    transition: none;
+  }
+  .wslider.fx-zoom .wslide.on img {
+    animation: none;
+  }
+}

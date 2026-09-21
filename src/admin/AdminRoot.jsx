@@ -21,7 +21,7 @@ import {
   X,
 } from 'lucide-react'
 import { COL } from '../firebase'
-import { MODULES, CONTENT_GROUPS, SITE_GROUPS, HERO_FIELDS, PROGRAM_FIELDS, REGION_FIELDS, TEAM_FIELDS, NEWS_FIELDS, PARTNER_FIELDS } from '../data/schema'
+import { MODULES, CONTENT_GROUPS, SITE_GROUPS, PROGRAM_FIELDS, REGION_FIELDS, TEAM_FIELDS, NEWS_FIELDS, PARTNER_FIELDS } from '../data/schema'
 import { useRawCollection } from '../lib/data'
 import { fmtDate } from '../lib/text'
 import { Loading, useLogo } from '../components/ui'
@@ -36,6 +36,7 @@ import Messages from './Messages'
 import SubAdmins from './SubAdmins'
 import Account from './Account'
 import MenuManager from './MenuManager'
+import HeroManager from './HeroManager'
 import '../styles/admin.css'
 
 const ICONS = {
@@ -126,21 +127,7 @@ function Shell() {
 
         <Routes>
           <Route index element={<Dashboard />} />
-          <Route
-            path="hero"
-            element={guard(
-              'hero',
-              <CrudManager
-                title="Hero Images"
-                hint="Images you upload here appear on the home page right away as a slider (slow zoom + animated caption). Each image's caption is shown inside the image. If there are no images, the default design is shown."
-                collectionName={COL.hero}
-                fields={HERO_FIELDS}
-                addLabel="Add hero image"
-                card={(it) => ({ title: it.caption || 'Hero image', meta: it.link || '', image: it.image })}
-                wide={false}
-              />,
-            )}
-          />
+          <Route path="hero" element={guard('hero', <HeroManager />)} />
           <Route path="site" element={guard('site', <SettingsForm title="Website Info" hint="Name, logo, contact details, social links and About texts." groups={SITE_GROUPS} />)} />
           <Route path="content" element={guard('content', <SettingsForm title="Page Content" hint="Texts of the Programs, Leadership, Impact and Partner pages." groups={CONTENT_GROUPS} />)} />
           <Route path="menu" element={guard('menu', <MenuManager />)} />

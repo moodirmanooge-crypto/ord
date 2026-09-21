@@ -1,12 +1,12 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronLeft, ChevronRight, Mail } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import { useContent, useSite, colorVar } from '../lib/data'
 import { paras, rows, titled } from '../lib/text'
 import { Section, Topo, ProgramIcon, useLogo, usePageTitle } from '../components/ui'
 import { NewsCard, sortNews } from '../components/cards'
+import HeroSlideshow from '../components/HeroSlideshow'
 
-const isExt = (u = '') => /^(https?:|mailto:|tel:)/i.test(u)
 const prefersReduced = () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Afarta barnaamij (tile) — hero-ga hoostiisa
@@ -24,128 +24,21 @@ function PillarStrip({ programs }) {
   )
 }
 
-// Qoraalka sawirka: erey-erey ayuu u soo baxaa (animation)
-function Words({ text }) {
-  return String(text)
-    .split(/\s+/)
-    .filter(Boolean)
-    .map((w, k) => (
-      <Fragment key={k}>
-        <span style={{ '--w': k }}>{w}</span>{' '}
-      </Fragment>
-    ))
-}
-
-// Slider-ka sawirrada hero-ga (sawirada admin-ku soo geliyo): Ken Burns + caption box + dots + swipe
-function HeroSlider({ photos, programs }) {
-  const { site } = useSite()
-  const [i, setI] = useState(0)
-  const [paused, setPaused] = useState(false)
-  const touch = useRef(null)
-  const n = photos.length
-  const cur = i % n
-  const go = useCallback((d) => setI((x) => (x + d + n) % n), [n])
-
-  useEffect(() => {
-    if (n < 2 || paused || prefersReduced()) return undefined
-    const t = setInterval(() => setI((x) => (x + 1) % n), 6800)
-    return () => clearInterval(t)
-  }, [n, paused])
-
-  return (
-    <>
-      <section
-        className="wslider"
-        aria-roledescription="carousel"
-        aria-label="RDA"
-        tabIndex={0}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
-        onKeyDown={(e) => {
-          if (e.key === 'ArrowRight') go(1)
-          if (e.key === 'ArrowLeft') go(-1)
-        }}
-        onTouchStart={(e) => {
-          touch.current = e.touches[0].clientX
-        }}
-        onTouchEnd={(e) => {
-          if (touch.current === null) return
-          const dx = e.changedTouches[0].clientX - touch.current
-          touch.current = null
-          if (Math.abs(dx) > 45) go(dx < 0 ? 1 : -1)
-        }}
-      >
-        {photos.map((s, k) => {
-          const on = k === cur
-          const text = s.caption || site.heroTitle
-          const title = <Words text={text} />
-          return (
-            <div key={s.id} className={`wslide ${on ? 'on' : ''}`} aria-hidden={!on} role="group" aria-roledescription="slide" aria-label={`${k + 1} / ${n}`}>
-              <img src={s.image} alt="" loading={k === 0 ? 'eager' : 'lazy'} draggable="false" />
-              <div className="wslide-shade" />
-              <div className="container wcap-wrap">
-                <div className="wcap">
-                  <div className="wcap-in">
-                    <h2>
-                      {s.link ? (
-                        isExt(s.link) ? (
-                          <a href={s.link} target="_blank" rel="noreferrer" tabIndex={on ? 0 : -1}>
-                            {title}
-                          </a>
-                        ) : (
-                          <Link to={s.link} tabIndex={on ? 0 : -1}>
-                            {title}
-                          </Link>
-                        )
-                      ) : (
-                        title
-                      )}
-                    </h2>
-                  </div>
-                  <div className="wcap-cta">
-                    <Link to="/programs" className="btn btn-light" tabIndex={on ? 0 : -1}>
-                      Explore our programs
-                    </Link>
-                    <Link to="/partner" className="btn btn-outline-light" tabIndex={on ? 0 : -1}>
-                      Partner with us
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-
-        {n > 1 && (
-          <>
-            <button type="button" className="wnav wprev" onClick={() => go(-1)} aria-label="Previous image">
-              <ChevronLeft size={28} />
-            </button>
-            <button type="button" className="wnav wnext" onClick={() => go(1)} aria-label="Next image">
-              <ChevronRight size={28} />
-            </button>
-            <div className="wdots" role="tablist" aria-label="Hero images">
-              {photos.map((s, k) => (
-                <button key={s.id} type="button" role="tab" aria-selected={k === cur} className={k === cur ? 'on' : ''} onClick={() => setI(k)} aria-label={`Image ${k + 1}`} />
-              ))}
-            </div>
-          </>
-        )}
-      </section>
-      <PillarStrip programs={programs} />
-    </>
-  )
-}
-
 function Hero({ slides, programs }) {
   const { site } = useSite()
   const logo = useLogo()
-  const photos = slides.filter((s) => s.image)
+  // Only images that are not hidden in Admin → Hero Images
+  const photos = slides.filter((s) => s.image && s.visible !== false)
 
-  // Sawirro admin-ku geliyay haddii ay jiraan → slider; haddii kale hero-gii hore
-  if (photos.length > 0) return <HeroSlider photos={photos} programs={programs} />
+  // Images uploaded by the admin → slider (fade / slide / zoom, set in Admin → Hero Images); otherwise the original hero
+  if (photos.length > 0) {
+    return (
+      <>
+        <HeroSlideshow slides={photos} site={site} />
+        <PillarStrip programs={programs} />
+      </>
+    )
+  }
 
   return (
     <section className="hero">
