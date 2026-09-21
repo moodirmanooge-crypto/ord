@@ -241,6 +241,30 @@
 .sf-base p {
   margin: 0;
 }
+.sf-base-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.sf-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 99px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.25s var(--ease);
+}
+.sf-admin:hover {
+  background: #fff;
+  border-color: #fff;
+  color: var(--green-700);
+  transform: translateY(-2px);
+}
 .sf-top {
   flex-shrink: 0;
   display: grid;
@@ -286,6 +310,12 @@
     margin-top: 22px;
   }
   .sf-base {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
     font-size: 0.86rem;
+  }
+  .sf-base-right {
+    justify-content: space-between;
   }
 }
