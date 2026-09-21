@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
-import { ChevronUp, Facebook, Globe, Instagram, Linkedin, Mail, MapPin, Phone, Twitter, Youtube } from 'lucide-react'
+import { ChevronUp, Facebook, Globe, Instagram, Linkedin, Mail, MapPin, Twitter, Youtube } from 'lucide-react'
 import { useSite } from '../lib/data'
-import { ensureUrl, lines, telHref } from '../lib/text'
+import { ensureUrl } from '../lib/text'
 import { Topo, useLogo } from './ui'
 import '../styles/footer.css'
 
@@ -22,7 +22,6 @@ const WORK = [
 export default function Footer() {
   const { site } = useSite()
   const logo = useLogo()
-  const phones = lines(site.phones)
   const socials = [
     ['facebook', Facebook, 'Facebook'],
     ['twitter', Twitter, 'X / Twitter'],
@@ -103,32 +102,6 @@ export default function Footer() {
                 </span>
               </li>
             )}
-            {phones.length > 0 && (
-              <li>
-                <span className="sf-ic">
-                  <Phone size={18} />
-                </span>
-                <span className="sf-val">
-                  <small>Phone</small>
-                  {phones.map((p) => (
-                    <a key={p} href={telHref(p)}>
-                      {p}
-                    </a>
-                  ))}
-                </span>
-              </li>
-            )}
-            {site.email && (
-              <li>
-                <span className="sf-ic">
-                  <Mail size={18} />
-                </span>
-                <span className="sf-val">
-                  <small>Email</small>
-                  <a href={`mailto:${site.email}`}>{site.email}</a>
-                </span>
-              </li>
-            )}
             {site.website && (
               <li>
                 <span className="sf-ic">
@@ -142,6 +115,15 @@ export default function Footer() {
                 </span>
               </li>
             )}
+            <li>
+              <span className="sf-ic">
+                <Mail size={18} />
+              </span>
+              <span className="sf-val">
+                <small>Get in touch</small>
+                <Link to="/contact">Contact us</Link>
+              </span>
+            </li>
           </ul>
         </div>
       </div>

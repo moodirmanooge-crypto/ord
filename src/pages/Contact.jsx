@@ -1,6 +1,24 @@
 import { useEffect, useRef, useState } from 'react'
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore'
-import { Building2, Facebook, Globe, Instagram, Linkedin, Mail, MapPin, MessageSquare, Phone, Send, Twitter, User, Youtube } from 'lucide-react'
+import {
+  ArrowUpRight,
+  Building2,
+  Facebook,
+  Globe,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  MessageCircle,
+  MessageSquare,
+  Navigation,
+  Phone,
+  PhoneCall,
+  Send,
+  Twitter,
+  User,
+  Youtube,
+} from 'lucide-react'
 import { db, COL } from '../firebase'
 import { useSite } from '../lib/data'
 import { ensureUrl, initials, lines, telHref } from '../lib/text'
@@ -10,7 +28,15 @@ import '../styles/contact.css'
 const TOPICS = ['Partnership', 'Funding / donor inquiry', 'UN agency / government', 'Media', 'Careers / volunteering', 'Other']
 const EMPTY = { name: '', email: '', phone: '', organization: '', topic: TOPICS[0], message: '', website: '' }
 
-// Element-ku wuxuu si qurux badan u soo muuqdaa marka la gaaro muuqaalka
+// Direct links: a click takes the visitor straight to the phone, WhatsApp, mail, map or website
+const digits = (p) => String(p).replace(/[^\d]/g, '')
+const waHref = (p) => `https://wa.me/${digits(p)}?text=${encodeURIComponent('Hello RDA team, I would like to get in touch.')}`
+const mapQuery = (addr) => String(addr).replace(/^[^:]*office[^:]*:\s*/i, '').trim()
+const mapsLink = (addr) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery(addr))}`
+const mapsEmbed = (addr) => `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery(addr))}&z=13&output=embed`
+const gmailLink = (email) => `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodeURIComponent('Message to RDA')}`
+
+// The element appears with an animation when it reaches the screen
 function InView({ as: Tag = 'div', from = 'up', delay = 0, className = '', children, ...rest }) {
   const ref = useRef(null)
   const [on, setOn] = useState(false)
@@ -70,38 +96,9 @@ export default function Contact() {
     }
   }
 
-  const quick = [
-    site.address && { key: 'visit', tone: 'blue', icon: MapPin, label: 'Visit us', body: <span>{site.address}</span> },
-    phones.length > 0 && {
-      key: 'call',
-      tone: 'green',
-      icon: Phone,
-      label: 'Call us',
-      body: phones.map((p) => (
-        <a key={p} href={telHref(p)}>
-          {p}
-        </a>
-      )),
-    },
-    site.email && {
-      key: 'mail',
-      tone: 'red',
-      icon: Mail,
-      label: 'Email us',
-      body: <a href={`mailto:${site.email}`}>{site.email}</a>,
-    },
-    site.website && {
-      key: 'web',
-      tone: 'indigo',
-      icon: Globe,
-      label: 'Website',
-      body: (
-        <a href={ensureUrl(site.website)} target="_blank" rel="noreferrer">
-          {site.website}
-        </a>
-      ),
-    },
-  ].filter(Boolean)
+  const hasCards = site.address || phones.length > 0 || site.email || site.website
+  let delay = 0
+  const next = () => (delay += 110) - 110
 
   return (
     <>
@@ -109,27 +106,108 @@ export default function Contact() {
 
       <div className="ct-page">
         <div className="container">
-          {quick.length > 0 && (
+          {/* ---------- contact cards: every click goes straight to the app ---------- */}
+          {hasCards && (
             <div className="ct-quick">
-              {quick.map((q, i) => {
-                const Icon = q.icon
-                return (
-                  <InView key={q.key} className={`ct-card tone-${q.tone}`} delay={i * 110}>
-                    <span className="ct-ico">
-                      <Icon size={24} />
+              {site.address && (
+                <InView as="article" className="ct-card tone-blue" delay={next()}>
+                  <a className="ct-hit" href={mapsLink(site.address)} target="_blank" rel="noreferrer" aria-label={`Open ${site.address} in Google Maps`} />
+                  <span className="ct-ico">
+                    <MapPin size={24} />
+                  </span>
+                  <span className="ct-card-text">
+                    <small>Visit us</small>
+                    <span>{site.address}</span>
+                  </span>
+                  <span className="ct-go" aria-hidden="true">
+                    <ArrowUpRight size={18} />
+                  </span>
+                  <span className="ct-pills">
+                    <span className="ct-pill">
+                      <Navigation size={14} /> Open in Maps
                     </span>
-                    <span className="ct-card-text">
-                      <small>{q.label}</small>
-                      {q.body}
+                  </span>
+                </InView>
+              )}
+
+              {phones.length > 0 && (
+                <InView as="article" className="ct-card tone-green" delay={next()}>
+                  <span className="ct-ico">
+                    <Phone size={24} />
+                  </span>
+                  <span className="ct-card-text">
+                    <small>Call us</small>
+                    <span>Call or chat on WhatsApp</span>
+                  </span>
+                  <span className="ct-phones">
+                    {phones.map((p) => (
+                      <span className="ct-phone" key={p}>
+                        <a className="ct-num" href={telHref(p)}>
+                          {p}
+                        </a>
+                        <a className="ct-mini call" href={telHref(p)} aria-label={`Call ${p}`} title="Call">
+                          <PhoneCall size={16} />
+                        </a>
+                        <a className="ct-mini wa" href={waHref(p)} target="_blank" rel="noreferrer" aria-label={`WhatsApp ${p}`} title="WhatsApp">
+                          <MessageCircle size={16} />
+                        </a>
+                      </span>
+                    ))}
+                  </span>
+                </InView>
+              )}
+
+              {site.email && (
+                <InView as="article" className="ct-card tone-red" delay={next()}>
+                  <a className="ct-hit" href={`mailto:${site.email}`} aria-label={`Send an email to ${site.email}`} />
+                  <span className="ct-ico">
+                    <Mail size={24} />
+                  </span>
+                  <span className="ct-card-text">
+                    <small>Email us</small>
+                    <span className="ct-email">{site.email}</span>
+                  </span>
+                  <span className="ct-go" aria-hidden="true">
+                    <ArrowUpRight size={18} />
+                  </span>
+                  <span className="ct-pills">
+                    <span className="ct-pill">
+                      <Send size={14} /> Send email
                     </span>
-                  </InView>
-                )
-              })}
+                    <a className="ct-pill ct-pill-link" href={gmailLink(site.email)} target="_blank" rel="noreferrer">
+                      Gmail
+                    </a>
+                  </span>
+                </InView>
+              )}
+
+              {site.website && (
+                <InView as="article" className="ct-card tone-indigo" delay={next()}>
+                  <a className="ct-hit" href={ensureUrl(site.website)} target="_blank" rel="noreferrer" aria-label={`Open ${site.website}`} />
+                  <span className="ct-ico">
+                    <Globe size={24} />
+                  </span>
+                  <span className="ct-card-text">
+                    <small>Website</small>
+                    <span>{site.website}</span>
+                  </span>
+                  <span className="ct-go" aria-hidden="true">
+                    <ArrowUpRight size={18} />
+                  </span>
+                  <span className="ct-pills">
+                    <span className="ct-pill">
+                      <Globe size={14} /> Visit website
+                    </span>
+                  </span>
+                </InView>
+              )}
             </div>
           )}
 
+          {/* ---------- form + direct actions ---------- */}
           <div className="ct-main">
             <InView as="form" from="left" className="ct-form" onSubmit={submit}>
+              <span className="ct-deco" aria-hidden="true" />
               {state.done ? (
                 <div className="ct-done" role="status">
                   <svg viewBox="0 0 80 80" width="88" height="88" aria-hidden="true">
@@ -231,11 +309,35 @@ export default function Contact() {
                   </div>
                 )}
 
-                {site.email && (
-                  <a className="ct-mailbtn" href={`mailto:${site.email}`}>
-                    <Mail size={18} /> {site.email}
-                  </a>
-                )}
+                <div className="ct-act">
+                  {phones[0] && (
+                    <a className="ct-act-btn call" href={telHref(phones[0])}>
+                      <PhoneCall size={20} />
+                      <span>
+                        <b>Call now</b>
+                        <small>{phones[0]}</small>
+                      </span>
+                    </a>
+                  )}
+                  {phones[0] && (
+                    <a className="ct-act-btn wa" href={waHref(phones[0])} target="_blank" rel="noreferrer">
+                      <MessageCircle size={20} />
+                      <span>
+                        <b>Chat on WhatsApp</b>
+                        <small>Opens WhatsApp</small>
+                      </span>
+                    </a>
+                  )}
+                  {site.email && (
+                    <a className="ct-act-btn mail" href={`mailto:${site.email}`}>
+                      <Mail size={20} />
+                      <span>
+                        <b>Send an email</b>
+                        <small>{site.email}</small>
+                      </span>
+                    </a>
+                  )}
+                </div>
 
                 {socials.length > 0 && (
                   <div className="ct-socials">
@@ -249,6 +351,25 @@ export default function Contact() {
               </div>
             </InView>
           </div>
+
+          {/* ---------- map ---------- */}
+          {site.address && (
+            <InView className="ct-map">
+              <iframe title={`Map: ${site.address}`} src={mapsEmbed(site.address)} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+              <div className="ct-map-card">
+                <span className="ct-ico">
+                  <MapPin size={22} />
+                </span>
+                <div>
+                  <strong>{site.orgName}</strong>
+                  <span>{site.address}</span>
+                </div>
+                <a className="ct-dir" href={mapsLink(site.address)} target="_blank" rel="noreferrer">
+                  <Navigation size={16} /> Get directions
+                </a>
+              </div>
+            </InView>
+          )}
         </div>
       </div>
     </>

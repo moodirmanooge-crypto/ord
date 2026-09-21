@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { ChevronDown, Facebook, Instagram, Linkedin, Menu, Phone, Mail, Twitter, X, Youtube } from 'lucide-react'
+import { ChevronDown, Facebook, Instagram, Linkedin, Menu, Twitter, X, Youtube } from 'lucide-react'
 import { useSite, useContent } from '../lib/data'
-import { ensureUrl, lines, telHref } from '../lib/text'
+import { ensureUrl } from '../lib/text'
 import { buildNav, isExternal } from '../lib/menu'
 import { useLogo } from './ui'
 
@@ -33,7 +33,6 @@ export default function Header() {
   const [expanded, setExpanded] = useState('')
   const [openSub, setOpenSub] = useState('') // dropdown-ka desktop-ka ee furan
   const closeTimer = useRef(null)
-  const phones = lines(site.phones)
   const socials = [
     ['facebook', Facebook, 'Facebook'],
     ['twitter', Twitter, 'X / Twitter'],
@@ -96,16 +95,6 @@ export default function Header() {
         <div className="container utility-inner">
           <p>{site.tagline}</p>
           <div className="utility-links">
-            {phones[0] && (
-              <a href={telHref(phones[0])}>
-                <Phone size={14} /> {phones[0]}
-              </a>
-            )}
-            {site.email && (
-              <a href={`mailto:${site.email}`}>
-                <Mail size={14} /> {site.email}
-              </a>
-            )}
             {socials.length > 0 && (
               <span className="utility-social">
                 {socials.map(([k, Icon, label]) => (
@@ -130,24 +119,6 @@ export default function Header() {
           </Link>
 
           <div className="brandbar-info">
-            {phones[0] && (
-              <a href={telHref(phones[0])} className="info-item">
-                <Phone size={22} />
-                <span>
-                  <small>Call us</small>
-                  <b>{phones[0]}</b>
-                </span>
-              </a>
-            )}
-            {site.email && (
-              <a href={`mailto:${site.email}`} className="info-item">
-                <Mail size={22} />
-                <span>
-                  <small>Email us</small>
-                  <b>{site.email}</b>
-                </span>
-              </a>
-            )}
             <Link to="/partner" className="btn btn-red nav-cta" onClick={closeAll}>
               Partner with us
             </Link>
@@ -260,16 +231,6 @@ export default function Header() {
           <Link to="/partner" className="btn btn-red btn-block">
             Partner with us
           </Link>
-          {phones[0] && (
-            <a href={telHref(phones[0])}>
-              <Phone size={16} /> {phones[0]}
-            </a>
-          )}
-          {site.email && (
-            <a href={`mailto:${site.email}`}>
-              <Mail size={16} /> {site.email}
-            </a>
-          )}
         </div>
       </div>
     </header>

@@ -14,7 +14,10 @@ export function SiteProvider({ children }) {
       doc(db, COL.settings, 'site'),
       (snap) => {
         const d = snap.exists() ? snap.data() : {}
-        setState({ site: { ...DEFAULT_SITE, ...d }, seeded: d.seeded || {}, loaded: true, exists: snap.exists() })
+        const site = { ...DEFAULT_SITE, ...d }
+        // The website address changed to rdaafrica.org — the old default that is still saved in Firestore is shown as the new one
+        if (/^(https?:\/\/)?(www\.)?rda-somalia\.org\/?$/i.test(String(site.website || '').trim())) site.website = DEFAULT_SITE.website
+        setState({ site, seeded: d.seeded || {}, loaded: true, exists: snap.exists() })
       },
       (err) => {
         console.error('[RDA] settings', err)

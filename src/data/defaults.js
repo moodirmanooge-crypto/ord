@@ -14,7 +14,7 @@ export const DEFAULT_SITE = {
 
   phones: '+252 617125933\n+252 615556306\n+252 615931926',
   email: 'info@rda-somalia.org',
-  website: 'Rdaafrica.org',
+  website: 'rdaafrica.org',
   address: 'Head Office: Mogadishu, Banadir Region, Somalia',
   executiveDirector: 'Ali Isack Ali',
   facebook: '',

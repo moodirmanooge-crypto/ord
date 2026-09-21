@@ -1,5 +1,5 @@
 /* ==========================================================
-   RDA Somalia — bogga Contact
+   RDA Somalia — Contact page
    ========================================================== */
 .ct-page {
   position: relative;
@@ -9,7 +9,7 @@
   background: var(--paper);
 }
 
-/* ---------- animation-ka soo muuqashada ---------- */
+/* ---------- entrance animation ---------- */
 .ct-in {
   opacity: 0;
 }
@@ -42,25 +42,41 @@
   }
 }
 
-/* ---------- 4-ta kaarka ee kore ---------- */
+/* ---------- contact cards ---------- */
 .ct-quick {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(262px, 1fr));
   gap: 18px;
   margin-top: -38px;
   margin-bottom: clamp(32px, 5vw, 56px);
 }
 .ct-card {
   --c: var(--blue);
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 22px 22px 24px;
-  border-radius: 20px;
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas:
+    'ico text'
+    'pills pills';
+  gap: 14px 16px;
+  align-content: start;
+  padding: 24px 22px 20px;
+  overflow: hidden;
+  border-radius: 22px;
   background: #fff;
   border: 1px solid var(--line);
   box-shadow: 0 16px 40px rgba(10, 37, 64, 0.1);
   transition: transform 0.3s var(--ease), box-shadow 0.3s, border-color 0.3s;
+}
+.ct-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--c);
+  transform: scaleX(0.28);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease);
 }
 .ct-card.tone-green {
   --c: var(--green);
@@ -72,17 +88,31 @@
   --c: var(--indigo);
 }
 .ct-card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-7px);
   border-color: color-mix(in srgb, var(--c) 45%, var(--line));
-  box-shadow: 0 24px 50px rgba(10, 37, 64, 0.16);
+  box-shadow: 0 26px 52px rgba(10, 37, 64, 0.17);
+}
+.ct-card:hover::before {
+  transform: scaleX(1);
+}
+.ct-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+.ct-hit:focus-visible {
+  outline: 3px solid #5db2ff;
+  outline-offset: -3px;
 }
 .ct-ico {
+  grid-area: ico;
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
+  width: 54px;
+  height: 54px;
+  border-radius: 17px;
   background: color-mix(in srgb, var(--c) 13%, #fff);
   color: var(--c);
   transition: background 0.3s, color 0.3s, transform 0.4s var(--ease);
@@ -90,35 +120,146 @@
 .ct-card:hover .ct-ico {
   background: var(--c);
   color: #fff;
-  transform: rotate(-8deg) scale(1.06);
+  transform: rotate(-8deg) scale(1.07);
 }
 .ct-card-text {
+  grid-area: text;
   display: grid;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
-  line-height: 1.5;
+  padding-right: 30px;
+  line-height: 1.45;
   overflow-wrap: anywhere;
   color: var(--ink);
+  font-weight: 600;
+}
+.ct-card-text > span {
   font-weight: 500;
 }
 .ct-card-text small {
-  margin-bottom: 2px;
   font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--ink-3);
 }
-.ct-card-text a {
-  color: var(--ink);
-  text-decoration: none;
-}
-.ct-card-text a:hover {
+.ct-go {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--c) 12%, #fff);
   color: var(--c);
-  text-decoration: underline;
+  transition: background 0.3s, color 0.3s, transform 0.35s var(--ease);
+}
+.ct-card:hover .ct-go {
+  background: var(--c);
+  color: #fff;
+  transform: rotate(45deg);
+}
+.ct-pills {
+  grid-area: pills;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  pointer-events: none;
+}
+.ct-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--c) 10%, #fff);
+  color: var(--c);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.ct-pill-link {
+  pointer-events: auto;
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--c) 40%, #fff);
+}
+.ct-pill-link:hover {
+  background: var(--c);
+  color: #fff;
+}
+.ct-card:hover .ct-pills .ct-pill:not(.ct-pill-link) {
+  background: var(--c);
+  color: #fff;
+}
+.ct-email {
+  font-size: 0.98rem;
 }
 
-/* ---------- foomka + aside ---------- */
+/* phone rows */
+.ct-phones {
+  grid-area: pills;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+.ct-phone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 5px 5px 12px;
+  border-radius: 14px;
+  background: #f4f8f6;
+  transition: background 0.2s;
+}
+.ct-phone:hover {
+  background: #e9f3ee;
+}
+.ct-num {
+  min-width: 0;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.ct-num:hover {
+  color: var(--green);
+  text-decoration: underline;
+}
+.ct-mini {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s, transform 0.25s var(--ease);
+}
+.ct-mini.call {
+  background: #e6f4ec;
+  color: var(--green-700);
+}
+.ct-mini.wa {
+  background: #dcf8e6;
+  color: #128c4a;
+}
+.ct-mini:hover {
+  background: var(--green);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+/* ---------- form + aside ---------- */
 .ct-main {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.9fr);
@@ -126,14 +267,29 @@
   align-items: stretch;
 }
 .ct-form {
+  position: relative;
   display: grid;
   align-content: start;
   gap: 20px;
   padding: clamp(24px, 4vw, 44px);
-  border-radius: 26px;
+  overflow: hidden;
+  border-radius: 28px;
   background: #fff;
   border: 1px solid var(--line);
   box-shadow: 0 20px 50px rgba(10, 37, 64, 0.08);
+}
+.ct-form > * {
+  position: relative;
+}
+.ct-deco {
+  position: absolute !important;
+  top: -90px;
+  right: -90px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--blue) 16%, #fff), transparent 70%);
+  pointer-events: none;
 }
 .ct-form-head h2 {
   font-size: clamp(1.6rem, 3vw, 2.2rem);
@@ -318,7 +474,7 @@
   font-weight: 600;
 }
 
-/* guul */
+/* success */
 .ct-done {
   display: grid;
   justify-items: center;
@@ -362,11 +518,11 @@
   color: var(--ink-2);
 }
 
-/* ---------- aside madow ---------- */
+/* ---------- dark aside ---------- */
 .ct-aside {
   position: relative;
   overflow: hidden;
-  border-radius: 26px;
+  border-radius: 28px;
   background: var(--navy-800);
   color: #fff;
   box-shadow: 0 20px 50px rgba(10, 37, 64, 0.22);
@@ -382,7 +538,7 @@
   z-index: 1;
   display: grid;
   align-content: start;
-  gap: 22px;
+  gap: 20px;
   height: 100%;
   padding: clamp(26px, 4vw, 42px);
 }
@@ -426,24 +582,67 @@
   font-family: var(--font-display);
   font-size: 1.2rem;
 }
-.ct-mailbtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+
+/* direct actions */
+.ct-act {
+  display: grid;
   gap: 10px;
-  padding: 14px 20px;
-  border-radius: 14px;
+}
+.ct-act-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #fff;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s, transform 0.25s var(--ease), color 0.2s;
+}
+.ct-act-btn > svg {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.14);
+  transition: background 0.2s, color 0.2s;
+}
+.ct-act-btn > span {
+  display: grid;
+  line-height: 1.3;
+  min-width: 0;
+}
+.ct-act-btn b {
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+}
+.ct-act-btn small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.72);
+}
+.ct-act-btn:hover {
   background: #fff;
   color: var(--navy-800);
-  font-family: var(--font-display);
-  font-weight: 600;
-  text-decoration: none;
-  overflow-wrap: anywhere;
-  transition: transform 0.25s var(--ease), background 0.2s;
+  transform: translateX(6px);
 }
-.ct-mailbtn:hover {
-  background: #e7f1fa;
-  transform: translateY(-3px);
+.ct-act-btn:hover small {
+  color: var(--ink-3);
+}
+.ct-act-btn.call:hover > svg {
+  background: var(--blue);
+  color: #fff;
+}
+.ct-act-btn.wa:hover > svg {
+  background: #25d366;
+  color: #fff;
+}
+.ct-act-btn.mail:hover > svg {
+  background: var(--red);
+  color: #fff;
 }
 .ct-socials {
   display: flex;
@@ -466,7 +665,74 @@
   transform: translateY(-4px);
 }
 
-/* ---------- Tablet & mobile ---------- */
+/* ---------- map ---------- */
+.ct-map {
+  position: relative;
+  margin-top: clamp(20px, 3vw, 34px);
+  overflow: hidden;
+  border-radius: 28px;
+  background: #dfe9e6;
+  border: 1px solid var(--line);
+  box-shadow: 0 20px 50px rgba(10, 37, 64, 0.1);
+}
+.ct-map iframe {
+  display: block;
+  width: 100%;
+  height: clamp(320px, 42vw, 460px);
+  border: 0;
+}
+.ct-map-card {
+  position: absolute;
+  left: clamp(14px, 2.4vw, 28px);
+  bottom: clamp(14px, 2.4vw, 28px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(520px, calc(100% - 28px));
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(10, 37, 64, 0.25);
+}
+.ct-map-card .ct-ico {
+  --c: var(--blue);
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+}
+.ct-map-card > div {
+  display: grid;
+  min-width: 0;
+  line-height: 1.35;
+}
+.ct-map-card strong {
+  font-family: var(--font-display);
+}
+.ct-map-card > div > span {
+  color: var(--ink-3);
+  font-size: 0.88rem;
+}
+.ct-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: var(--blue);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.25s var(--ease);
+}
+.ct-dir:hover {
+  background: var(--blue-700);
+  transform: translateY(-2px);
+}
+
+/* ---------- tablet & mobile ---------- */
 @media (max-width: 960px) {
   .ct-main {
     grid-template-columns: 1fr;
@@ -475,13 +741,25 @@
 @media (max-width: 620px) {
   .ct-quick {
     grid-template-columns: 1fr;
-    margin-top: -40px;
+    margin-top: -30px;
   }
   .ct-row {
     grid-template-columns: 1fr;
   }
   .ct-send {
     justify-self: stretch;
+    justify-content: center;
+  }
+  .ct-map-card {
+    position: static;
+    max-width: none;
+    border-radius: 0;
+    flex-wrap: wrap;
+    box-shadow: none;
+    border-top: 1px solid var(--line);
+  }
+  .ct-dir {
+    width: 100%;
     justify-content: center;
   }
 }

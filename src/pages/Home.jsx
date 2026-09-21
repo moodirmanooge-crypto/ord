@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Mail } from 'lucide-react'
 import { useContent, useSite, colorVar } from '../lib/data'
 import { paras, rows, titled } from '../lib/text'
 import { Section, Topo, ProgramIcon, useLogo, usePageTitle } from '../components/ui'
@@ -321,11 +320,6 @@ export default function Home() {
             <Link to="/contact" className="btn btn-light">
               Contact us
             </Link>
-            {site.email && (
-              <a href={`mailto:${site.email}`} className="btn btn-outline-light">
-                <Mail size={17} /> {site.email}
-              </a>
-            )}
           </div>
         </div>
       </section>
