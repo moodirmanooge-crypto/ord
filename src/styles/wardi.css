@@ -283,13 +283,13 @@ html {
   inset: 0;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 1.2s ease, visibility 0s linear 1.2s;
+  transition: opacity 0.5s ease, visibility 0s linear 0.5s;
 }
 .wslide.on {
   opacity: 1;
   visibility: visible;
   z-index: 1;
-  transition: opacity 1.2s ease;
+  transition: opacity 0.5s ease;
 }
 .wslide img {
   position: absolute;
@@ -341,7 +341,7 @@ html {
   transform-origin: left center;
 }
 .wslide.on .wcap-in::before {
-  animation: wBox 0.9s 0.35s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation: wBox 0.45s 0.05s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 @keyframes wBox {
   to {
@@ -373,8 +373,8 @@ html {
   transform: translateY(26px);
 }
 .wslide.on .wcap h2 span {
-  animation: wWord 0.75s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
-  animation-delay: calc(0.75s + var(--w, 0) * 70ms);
+  animation: wWord 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation-delay: calc(0.15s + var(--w, 0) * 35ms);
 }
 @keyframes wWord {
   to {
@@ -391,7 +391,7 @@ html {
   transform: translateY(18px);
 }
 .wslide.on .wcap-cta {
-  animation: wWord 0.8s 1.5s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  animation: wWord 0.4s 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
 }
 .wnav {
   position: absolute;
