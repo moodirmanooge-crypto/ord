@@ -55,9 +55,12 @@ export default function HeroSlideshow({ slides, site, preview = false }) {
       aria-roledescription="carousel"
       aria-label="RDA"
       tabIndex={preview ? -1 : 0}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
+      // Pause-on-hover is for mouse users only. On a touch screen the browser can fire a
+      // "hover"/focus event on tap and never a matching leave/blur, which used to freeze the
+      // slider on whatever image was showing when it was tapped — this is why it fixes that.
+      onPointerEnter={(e) => e.pointerType === 'mouse' && setPaused(true)}
+      onPointerLeave={(e) => e.pointerType === 'mouse' && setPaused(false)}
+      onFocus={(e) => e.target.matches(':focus-visible') && setPaused(true)}
       onBlur={() => setPaused(false)}
       onKeyDown={(e) => {
         if (n < 2) return
