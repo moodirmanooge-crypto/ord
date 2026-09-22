@@ -82,7 +82,14 @@ export default function HeroSlideshow({ slides, site, preview = false }) {
         const tab = on && !preview ? 0 : -1
         return (
           <div key={s.id} className={`wslide ${on ? 'on' : ''} ${!on && k === prev ? 'prev' : ''}`} aria-hidden={!on} role="group" aria-roledescription="slide" aria-label={`${k + 1} / ${n}`}>
-            <img src={s.image} alt="" loading={k === 0 ? 'eager' : 'lazy'} draggable="false" />
+            <img
+              src={s.image}
+              alt=""
+              loading={k === 0 ? 'eager' : 'lazy'}
+              fetchPriority={k === 0 ? 'high' : 'auto'}
+              decoding={k === 0 ? 'sync' : 'async'}
+              draggable="false"
+            />
             <div className="wslide-shade" />
             {text && (
               <div className="container wcap-wrap">

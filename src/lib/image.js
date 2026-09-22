@@ -61,7 +61,10 @@ export async function uploadImage(file, { folder = 'misc', png = false, onProgre
   const blob = await compress(file, { max: usePng ? 900 : 1800, quality: 0.82, png: usePng })
   const path = `rda/${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${usePng ? 'png' : 'jpg'}`
   try {
-    const task = uploadBytesResumable(ref(storage, path), blob, { contentType: blob.type })
+    // Each filename is unique (timestamp + random), so it is safe to tell every browser to cache
+    // this file for a full year without re-checking. That is what makes an image instant to load
+    // the second time it is shown, instead of being re-downloaded on every page view.
+    const task = uploadBytesResumable(ref(storage, path), blob, { contentType: blob.type, cacheControl: 'public, max-age=31536000, immutable' })
     await new Promise((resolve, reject) => {
       task.on(
         'state_changed',
@@ -98,7 +101,7 @@ export async function uploadVideo(file, { onProgress } = {}) {
   const ext = (file.name.split('.').pop() || 'mp4').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 5) || 'mp4'
   const path = `rda/videos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
   try {
-    const task = uploadBytesResumable(ref(storage, path), file, { contentType: file.type })
+    const task = uploadBytesResumable(ref(storage, path), file, { contentType: file.type, cacheControl: 'public, max-age=31536000, immutable' })
     await new Promise((resolve, reject) => {
       task.on(
         'state_changed',

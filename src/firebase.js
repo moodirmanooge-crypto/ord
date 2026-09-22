@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app'
-import { getFirestore } from 'firebase/firestore'
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
 // Firebase project: dream-crt  (Firebase Console → Project settings → Your apps → Web app)
@@ -15,7 +15,23 @@ const firebaseConfig = {
 }
 
 export const app = initializeApp(firebaseConfig)
-export const db = getFirestore(app)
+
+// Firestore keeps a local copy of the data on the device (IndexedDB). On the very first visit
+// the app still waits for the network; on every visit after that, the hero images, menu and page
+// text render immediately from the local copy while Firestore quietly checks for anything newer
+// in the background. This is what makes reloads and repeat visits feel instant instead of waiting
+// on the network every time. Older or very locked-down browsers (e.g. private browsing in some
+// versions of Safari) can refuse this — in that case the site falls back to the normal, always-
+// online mode automatically.
+let firestoreDb
+try {
+  firestoreDb = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) })
+} catch (e) {
+  console.warn('[RDA] offline cache unavailable, using the network-only default', e)
+  firestoreDb = getFirestore(app)
+}
+export const db = firestoreDb
+
 export const storage = getStorage(app)
 storage.maxUploadRetryTime = 20000
 
