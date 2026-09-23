@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useContent, useSite, colorVar } from '../lib/data'
 import { paras, rows, titled } from '../lib/text'
-import { Section, Topo, ProgramIcon, useLogo, usePageTitle } from '../components/ui'
+import { Section, Topo, ProgramIcon, usePageTitle } from '../components/ui'
 import { NewsCard, sortNews } from '../components/cards'
 import HeroSlideshow from '../components/HeroSlideshow'
 
@@ -25,44 +25,20 @@ function PillarStrip({ programs }) {
 
 function Hero({ slides, programs }) {
   const { site } = useSite()
-  const logo = useLogo()
   // Only images that are not hidden in Admin → Hero Images
   const photos = slides.filter((s) => s.image && s.visible !== false)
 
-  // Images uploaded by the admin → slider (fade / slide / zoom, set in Admin → Hero Images); otherwise the original hero
-  if (photos.length > 0) {
-    return (
-      <>
-        <HeroSlideshow slides={photos} site={site} />
-        <PillarStrip programs={programs} />
-      </>
-    )
-  }
+  // The old default (logo + text, no photo) hero has been removed for good, on both mobile and
+  // desktop. Only the real photo slideshow from Admin → Hero Images is ever shown here now.
+  // If no hero images are uploaded (or all are hidden), nothing renders in this spot — go to
+  // Admin → Hero Images and add at least one photo so the home page has a hero again.
+  if (photos.length === 0) return null
 
   return (
-    <section className="hero">
-      <Topo seed={1.3} rings={16} />
-
-      <div className="container hero-inner">
-        <div className="hero-copy">
-          <h1>{site.heroTitle}</h1>
-          <p className="hero-text">{site.heroText}</p>
-          <div className="hero-cta">
-            <Link to="/programs" className="btn btn-light">
-              Explore our programs
-            </Link>
-            <Link to="/partner" className="btn btn-outline-light">
-              Partner with us
-            </Link>
-          </div>
-        </div>
-        <div className="hero-mark" aria-hidden="true">
-          <img src={logo} alt="" />
-        </div>
-      </div>
-
+    <>
+      <HeroSlideshow slides={photos} site={site} />
       <PillarStrip programs={programs} />
-    </section>
+    </>
   )
 }
 
