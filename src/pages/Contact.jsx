@@ -28,6 +28,12 @@ import '../styles/contact.css'
 const TOPICS = ['Partnership', 'Funding / donor inquiry', 'UN agency / government', 'Media', 'Careers / volunteering', 'Other']
 const EMPTY = { name: '', email: '', phone: '', organization: '', topic: TOPICS[0], message: '', website: '' }
 
+// Official RDA social pages: used when the admin settings do not have a link for them
+const DEFAULT_SOCIALS = {
+  facebook: 'https://www.facebook.com/share/19hv9ETpzc/',
+  linkedin: 'https://www.linkedin.com/company/rural-development-aid-rda/',
+}
+
 // Direct links: a click takes the visitor straight to the phone, WhatsApp, mail, map or website
 const digits = (p) => String(p).replace(/[^\d]/g, '')
 const waHref = (p) => `https://wa.me/${digits(p)}?text=${encodeURIComponent('Hello RDA team, I would like to get in touch.')}`
@@ -79,7 +85,9 @@ export default function Contact() {
     ['linkedin', Linkedin, 'LinkedIn'],
     ['instagram', Instagram, 'Instagram'],
     ['youtube', Youtube, 'YouTube'],
-  ].filter(([k]) => site[k])
+  ]
+    .map(([k, Icon, label]) => [k, Icon, label, site[k] || DEFAULT_SOCIALS[k]])
+    .filter(([, , , url]) => url)
 
   async function submit(e) {
     e.preventDefault()
@@ -341,8 +349,8 @@ export default function Contact() {
 
                 {socials.length > 0 && (
                   <div className="ct-socials">
-                    {socials.map(([k, Icon, label]) => (
-                      <a key={k} href={ensureUrl(site[k])} target="_blank" rel="noreferrer" aria-label={label}>
+                    {socials.map(([k, Icon, label, url]) => (
+                      <a key={k} href={ensureUrl(url)} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}>
                         <Icon size={18} />
                       </a>
                     ))}
