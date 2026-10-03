@@ -206,6 +206,13 @@ export default function Contact() {
                     <span className="ct-pill">
                       <Globe size={14} /> Visit website
                     </span>
+                    {socials
+                      .filter(([k]) => k === 'facebook' || k === 'linkedin')
+                      .map(([k, Icon, label, url]) => (
+                        <a key={k} className="ct-pill ct-pill-link" href={ensureUrl(url)} target="_blank" rel="noopener noreferrer" aria-label={`Open RDA on ${label}`} title={label}>
+                          <Icon size={14} style={{ color: k === 'facebook' ? '#1877F2' : '#0A66C2' }} /> {label}
+                        </a>
+                      ))}
                   </span>
                 </InView>
               )}
